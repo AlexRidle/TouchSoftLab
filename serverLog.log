@@ -1,0 +1,47 @@
+[27.05.2019 16:04:39][INFO] : Сервер был запущен на порту 8080
+[27.05.2019 16:04:57][INFO] : Пользователь "client" подключился к чату
+[27.05.2019 16:05:02][INFO] : Пользователь "agent" подключился к чату
+[27.05.2019 16:05:11][INFO] : Пользователь "Two" подключился к чату
+[27.05.2019 16:05:23][INFO] : Пользователь "One" подключился к чату
+[27.05.2019 16:05:35][INFO] : Пользователь "client" соединился с агентом "agent"
+[27.05.2019 16:05:57][INFO] : Пользователь "One" соединился с агентом "Two"
+[27.05.2019 16:06:01][INFO] : Пользователь "One" отсоединился от пользователя "Two"
+[27.05.2019 16:06:08][INFO] : Пользователь "One" соединился с агентом "Two"
+[27.05.2019 16:06:13][INFO] : Пользователь "Two" отсоединился от пользователя "One"
+[27.05.2019 16:06:39][INFO] : Пользователь "One" соединился с агентом "Two"
+[27.05.2019 16:06:43][INFO] : Пользователь "One" отсоединился от пользователя "Two"
+[27.05.2019 16:06:43][INFO] : Пользователь "One" отсоединился от чата
+[27.05.2019 16:07:05][INFO] : Пользователь "agent" отсоединился от пользователя "client"
+[27.05.2019 16:07:05][INFO] : Пользователь "agent" отсоединился от чата
+[27.05.2019 16:07:05][ERROR] : Пользователь "agent" потерял соединение с сервером.
+java.net.SocketException: Connection reset
+	at java.net.SocketInputStream.read(SocketInputStream.java:210)
+	at java.net.SocketInputStream.read(SocketInputStream.java:141)
+	at sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:284)
+	at sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:326)
+	at sun.nio.cs.StreamDecoder.read(StreamDecoder.java:178)
+	at java.io.InputStreamReader.read(InputStreamReader.java:184)
+	at java.io.BufferedReader.fill(BufferedReader.java:161)
+	at java.io.BufferedReader.readLine(BufferedReader.java:324)
+	at java.io.BufferedReader.readLine(BufferedReader.java:389)
+	at Server.UserSocket.run(UserSocket.java:46)
+	at java.lang.Thread.run(Thread.java:748)
+
+[27.05.2019 16:07:09][INFO] : Пользователь "client" соединился с агентом "Two"
+[27.05.2019 16:07:28][INFO] : Пользователь "three" подключился к чату
+[27.05.2019 16:07:30][WARN] : Пользователь "three" пытался установить соединение, но не нашел свободных агентов
+[27.05.2019 16:07:32][INFO] : Пользователь "three" отсоединился от чата
+[27.05.2019 16:07:32][ERROR] : Пользователь "three" потерял соединение с сервером.
+java.net.SocketException: Connection reset
+	at java.net.SocketInputStream.read(SocketInputStream.java:210)
+	at java.net.SocketInputStream.read(SocketInputStream.java:141)
+	at sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:284)
+	at sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:326)
+	at sun.nio.cs.StreamDecoder.read(StreamDecoder.java:178)
+	at java.io.InputStreamReader.read(InputStreamReader.java:184)
+	at java.io.BufferedReader.fill(BufferedReader.java:161)
+	at java.io.BufferedReader.readLine(BufferedReader.java:324)
+	at java.io.BufferedReader.readLine(BufferedReader.java:389)
+	at Server.UserSocket.run(UserSocket.java:46)
+	at java.lang.Thread.run(Thread.java:748)
+
