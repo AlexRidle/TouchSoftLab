@@ -19,6 +19,7 @@ public class ServerApp {
     private ServerSocket serverSocket;
 
     public ServerApp(){
+        executorService = Executors.newSingleThreadExecutor();
         properties = ApplicationProperties.getProperties();
         userSockets = new HashSet<>();
         try {
@@ -27,7 +28,6 @@ public class ServerApp {
             ServerLogger.logError(String.format("Произошла ошибка при настройке порта сервера. Проверьте значение порта в файле конфигурации приложения.\r\n%s", ExceptionUtils.getStackTrace(e)));
             System.exit(0);
         }
-        executorService = Executors.newSingleThreadExecutor();
         try {
             serverSocket = new ServerSocket(PORT);
             ServerLogger.logInfo(String.format("Сервер был запущен на порту %s", PORT)
@@ -36,6 +36,9 @@ public class ServerApp {
             ServerLogger.logError(String.format("Произошла ошибка при запуске сервера на порту %s.\r\n%s", PORT, ExceptionUtils.getStackTrace(e)));
             System.exit(0);
         }
+    }
+
+    public void main(){
         executorService.submit(new SocketHandler(serverSocket, userSockets));
     }
 }

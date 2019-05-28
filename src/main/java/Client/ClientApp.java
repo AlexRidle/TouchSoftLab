@@ -29,7 +29,11 @@ public class ClientApp {
     private BufferedWriter socketOut;
 
     public ClientApp() {
+        executorService = Executors.newFixedThreadPool(2);
         properties = ApplicationProperties.getProperties();
+        clientService = new ClientService();
+        systemIn = new BufferedReader(new InputStreamReader(System.in));
+        clientInfo = clientService.clientRegister(systemIn);
 
         try {
             HOST = ApplicationProperties.getProperties().getProperty("HOST");
@@ -46,14 +50,9 @@ public class ClientApp {
                     "Проверьте значение порта в файле конфигурации приложения");
             System.exit(0);
         }
+    }
 
-        systemIn = new BufferedReader(new InputStreamReader(System.in));
-
-        executorService = Executors.newFixedThreadPool(2);
-
-        clientService = new ClientService();
-        clientInfo = clientService.clientRegister(systemIn);
-
+    public void main(){
         try {
             socket = new Socket(HOST, PORT);
             socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
@@ -81,5 +80,4 @@ public class ClientApp {
         executorService.submit(new ClientReceiver(socket, socketIn, clientService));
         executorService.submit(new ClientSender(socket, socketOut, clientService));
     }
-
 }
