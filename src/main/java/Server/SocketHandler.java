@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @AllArgsConstructor
 public class SocketHandler implements Runnable{
@@ -22,7 +24,8 @@ public class SocketHandler implements Runnable{
             if (socket != null) {
                 try{
                     UserSocket userSocket = new UserSocket(socket, userSockets);
-                    new Thread(userSocket).start();
+                    ExecutorService executorService = Executors.newSingleThreadExecutor();
+                    executorService.submit(userSocket);
                     userSockets.add(userSocket);
                 } catch (IOException e){
                     e.printStackTrace();

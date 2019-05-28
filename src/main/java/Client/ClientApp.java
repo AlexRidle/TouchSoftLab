@@ -10,6 +10,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ClientApp {
 
@@ -21,11 +23,13 @@ public class ClientApp {
     private Socket socket;
     private BufferedReader socketIn;
     private BufferedWriter socketOut;
+    private ExecutorService executorService;
 
     public ClientApp(){
-        systemIn = new BufferedReader(new InputStreamReader(System.in));
         HOST = ApplicationProperties.getProperties().getProperty("HOST");
         PORT = Integer.parseInt(ApplicationProperties.getProperties().getProperty("PORT"));
+        systemIn = new BufferedReader(new InputStreamReader(System.in));
+        executorService = Executors.newFixedThreadPool(2);
 
         clientService = new ClientService();
         clientInfo = clientService.clientRegister(systemIn);
@@ -50,8 +54,8 @@ public class ClientApp {
         }
 
         System.out.println("Для отправки сообщения введите текст");
-        new Thread(new ClientReceiver(socket, socketIn, clientService)).start();
-        new Thread(new ClientSender(socket, socketOut, clientService)).start();
+        executorService.submit(new ClientReceiver(socket, socketIn, clientService));
+        executorService.submit(new ClientSender(socket, socketOut, clientService));
     }
 
 }
