@@ -20,15 +20,14 @@ import java.util.HashSet;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class UserSocket implements Runnable {
 
-    private Socket socket;
-    private BufferedReader socketIn;
-    private BufferedWriter socketOut;
+    private final Socket socket;
+    private final BufferedReader socketIn;
+    private final BufferedWriter socketOut;
+    private final HashSet<UserSocket> userSockets;
+    private final ClientService clientService;
     private Client client;
-    private HashSet<UserSocket> userSockets;
-    private ClientService clientService;
 
     UserSocket(final Socket socket, final HashSet<UserSocket> userSockets) throws IOException {
         this.socket = socket;
@@ -99,7 +98,7 @@ public class UserSocket implements Runnable {
 
     private synchronized void close(final HashSet<UserSocket> userSockets, final Socket socket, final UserSocket userSocket) {
         userSockets.remove(userSocket);
-        UserSocket clientUserSocket = userSocket.getClient().getConnectedUserSocket();
+        final UserSocket clientUserSocket = userSocket.getClient().getConnectedUserSocket();
         if (clientUserSocket != null) {
             clientUserSocket.send(
                     String.format("%s завершил диалог.", userSocket.getClient().getName()),

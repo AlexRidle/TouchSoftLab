@@ -10,9 +10,9 @@ import java.util.HashMap;
 
 class ClientService {
     HashMap<String, String> clientRegister(final BufferedReader systemIn) {
+        final HashMap<String, String> content = new HashMap<>();
         String input;
         String[] splittedInput;
-        HashMap<String, String> content = null;
 
         try {
             System.out.println("Введите команду /register и свою роль с именем через пробел: ");
@@ -25,7 +25,6 @@ class ClientService {
                 splittedInput = input.split(" ");
             }
 
-            content = new HashMap<>();
             content.put("role", splittedInput[1]);
             content.put("name", splittedInput[2]);
         } catch (IOException e) {

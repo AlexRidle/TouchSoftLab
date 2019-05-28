@@ -14,8 +14,8 @@ import java.util.concurrent.Executors;
 @AllArgsConstructor
 public class SocketHandler implements Runnable{
 
-    private ServerSocket serverSocket;
-    private HashSet<UserSocket> userSockets;
+    private final ServerSocket serverSocket;
+    private final HashSet<UserSocket> userSockets;
 
     @Override
     public void run(){

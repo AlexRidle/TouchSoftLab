@@ -9,7 +9,7 @@ import java.util.HashSet;
 class ClientService {
 
     void registerClient(String input, UserSocket userSocket) {
-        HashMap<String, String> clientInfo = convertStringToHashMap(input);
+        final HashMap<String, String> clientInfo = convertStringToHashMap(input);
         if (clientInfo.get("role").equalsIgnoreCase(Role.AGENT.toString())) {
             userSocket.setClient(getNewClient(clientInfo.get("name"), Role.AGENT, true));
         } else {
@@ -28,7 +28,7 @@ class ClientService {
     }
 
     private Client getNewClient(String name, Role role, boolean isFree) {
-        Client client = new Client();
+        final Client client = new Client();
         client.setName(name);
         client.setRole(role);
         client.setFree(isFree);
@@ -36,18 +36,18 @@ class ClientService {
     }
 
     private HashMap<String, String> convertStringToHashMap(String input) {
-        HashMap<String, String> content = new HashMap<>();
+        final HashMap<String, String> content = new HashMap<>();
         input = input.substring(1, input.length() - 1);
-        String[] pairs = input.split(", ");
+        final String[] pairs = input.split(", ");
         for (String pair : pairs) {
-            String[] keyValue = pair.split("=");
+            final String[] keyValue = pair.split("=");
             content.put(keyValue[0], keyValue[1]);
         }
         return content;
     }
 
     void tryFindFreeAgent(final HashSet<UserSocket> userSockets, final UserSocket userSocket, final String message) {
-        UserSocket agent = getFreeAgent(userSockets);
+        final UserSocket agent = getFreeAgent(userSockets);
         userSocket.getClient().setConnectedUserSocket(agent);
 
         if(agent == null){
@@ -69,7 +69,7 @@ class ClientService {
         }
     }
 
-    private UserSocket getFreeAgent(HashSet<UserSocket> userSockets){
+    private UserSocket getFreeAgent(final HashSet<UserSocket> userSockets){
         for(UserSocket userSocket : userSockets){
             if(userSocket.getClient().getRole() == Role.AGENT && userSocket.getClient().isFree()){
                 userSocket.getClient().setFree(false);
@@ -80,7 +80,7 @@ class ClientService {
     }
 
     void leave(final UserSocket userSocket) {
-        Client client = userSocket.getClient();
+        final Client client = userSocket.getClient();
         if(client.getConnectedUserSocket() != null){
             userSocket.send("Вы вышли из диалога.", userSocket.getSocketOut());
             client.getConnectedUserSocket().send(

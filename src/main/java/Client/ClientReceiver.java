@@ -1,15 +1,13 @@
 package Client;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
 
 public class ClientReceiver implements Runnable {
-    private ClientService clientService;
-    private Socket socket;
-    private BufferedReader socketIn;
+    private final ClientService clientService;
+    private final Socket socket;
+    private final BufferedReader socketIn;
 
     ClientReceiver(final Socket socket, final BufferedReader socketIn, final ClientService clientService) {
         this.socket = socket;

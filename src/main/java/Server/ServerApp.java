@@ -12,19 +12,24 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ServerApp {
-    private ServerSocket serverSocket;
-    private HashSet<UserSocket> userSockets;
-    private Properties properties;
-    private ExecutorService executorService;
+    private final Properties properties;
+    private final ExecutorService executorService;
+    private final HashSet<UserSocket> userSockets;
     private int PORT;
+    private ServerSocket serverSocket;
 
     public ServerApp(){
         properties = ApplicationProperties.getProperties();
-        PORT = Integer.valueOf(properties.getProperty("PORT"));
+        userSockets = new HashSet<>();
+        try {
+            PORT = Integer.valueOf(properties.getProperty("PORT"));
+        } catch (IllegalArgumentException e) {
+            ServerLogger.logError(String.format("Произошла ошибка при настройке порта сервера. Проверьте значение порта в файле конфигурации приложения.\r\n%s", ExceptionUtils.getStackTrace(e)));
+            System.exit(0);
+        }
         executorService = Executors.newSingleThreadExecutor();
         try {
             serverSocket = new ServerSocket(PORT);
-            userSockets = new HashSet<>();
             ServerLogger.logInfo(String.format("Сервер был запущен на порту %s", PORT)
             );
         } catch (IOException e) {
