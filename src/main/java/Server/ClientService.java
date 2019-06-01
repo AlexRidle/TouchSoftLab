@@ -1,5 +1,6 @@
 package Server;
 
+import Service.ApplicationUtils;
 import Service.Role;
 import Service.ServerLogger;
 
@@ -9,7 +10,7 @@ import java.util.HashSet;
 class ClientService {
 
     void registerClient(String input, UserSocket userSocket) {
-        final HashMap<String, String> clientInfo = convertStringToHashMap(input);
+        final HashMap<String, String> clientInfo = ApplicationUtils.convertStringToHashMap(input);
         if (clientInfo.get("role").equalsIgnoreCase(Role.AGENT.toString())) {
             userSocket.setClient(getNewClient(clientInfo.get("name"), Role.AGENT, true));
         } else {
@@ -35,17 +36,6 @@ class ClientService {
         return client;
     }
 
-    private HashMap<String, String> convertStringToHashMap(String input) {
-        final HashMap<String, String> content = new HashMap<>();
-        input = input.substring(1, input.length() - 1);
-        final String[] pairs = input.split(", ");
-        for (String pair : pairs) {
-            final String[] keyValue = pair.split("=");
-            content.put(keyValue[0], keyValue[1]);
-        }
-        return content;
-    }
-
     void tryFindFreeAgent(final HashSet<UserSocket> userSockets, final UserSocket userSocket, final String message) {
         final UserSocket agent = getFreeAgent(userSockets);
         userSocket.getClient().setConnectedUserSocket(agent);
@@ -69,7 +59,7 @@ class ClientService {
         }
     }
 
-    private UserSocket getFreeAgent(final HashSet<UserSocket> userSockets){
+    UserSocket getFreeAgent(final HashSet<UserSocket> userSockets){
         for(UserSocket userSocket : userSockets){
             if(userSocket.getClient().getRole() == Role.AGENT && userSocket.getClient().isFree()){
                 userSocket.getClient().setFree(false);

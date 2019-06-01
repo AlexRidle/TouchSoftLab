@@ -18,8 +18,6 @@ public class ApplicationProperties {
 
             properties.load(input);
 
-            return properties;
-
         } catch (IOException e) {
             e.printStackTrace();
         }

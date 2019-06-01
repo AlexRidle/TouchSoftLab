@@ -1,34 +1,29 @@
-//package Service;
-//
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.mockito.Mock;
-//import org.mockito.junit.MockitoJUnitRunner;
-//import org.junit.Assert;
-//
-//import java.io.DataInputStream;
-//import java.io.File;
-//import java.io.FileInputStream;
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.util.Properties;
-//
-//import static org.mockito.Mockito.*;
-//
-//@RunWith(MockitoJUnitRunner.class)
-//public class TestApplicationProperties {
-//
-//    @Mock
-//    InputStream input;
-//
-//    @Test
-//    public void testGetProperties() throws IOException {
-//
-//        PowerMock
-//        ApplicationProperties applicationProperties = mock(ApplicationProperties.class);
-//        ApplicationProperties.getProperties();
-//        verify(applicationProperties).
-//
-//    }
-//
-//}
+package Service;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.Properties;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+@RunWith(MockitoJUnitRunner.class)
+public class TestApplicationProperties {
+
+    private Properties properties;
+
+    @Before
+    public void init() {
+        properties = MockDataService.getProperties();
+    }
+
+    @Test
+    public void testGetProperties() {
+        assertNotNull(ApplicationProperties.getProperties());
+        assertEquals(ApplicationProperties.getProperties(), properties);
+    }
+
+}

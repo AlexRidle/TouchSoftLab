@@ -1,10 +1,9 @@
 package Server;
 
-import Service.ExceptionUtils;
+import Service.ApplicationUtils;
 import Service.Role;
 import Service.ServerLogger;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.BufferedReader;
@@ -22,11 +21,11 @@ import java.util.HashSet;
 @Setter
 public class UserSocket implements Runnable {
 
-    private final Socket socket;
-    private final BufferedReader socketIn;
-    private final BufferedWriter socketOut;
-    private final HashSet<UserSocket> userSockets;
-    private final ClientService clientService;
+    private Socket socket;
+    private BufferedReader socketIn;
+    private BufferedWriter socketOut;
+    private HashSet<UserSocket> userSockets;
+    private ClientService clientService;
     private Client client;
 
     UserSocket(final Socket socket, final HashSet<UserSocket> userSockets) throws IOException {
@@ -35,6 +34,10 @@ public class UserSocket implements Runnable {
         clientService = new ClientService();
         socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
         socketOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
+    }
+
+    UserSocket(){
+
     }
 
     @Override
@@ -47,7 +50,7 @@ public class UserSocket implements Runnable {
                 close(userSockets, socket, this);
                 ServerLogger.logError(String.format("Пользователь \"%s\" потерял соединение с сервером.\r\n%s",
                         this.getClient().getName(),
-                        ExceptionUtils.getStackTrace(e))
+                        ApplicationUtils.convertThrowableToString(e))
                 );
                 break;
             }
@@ -96,7 +99,7 @@ public class UserSocket implements Runnable {
         }
     }
 
-    private synchronized void close(final HashSet<UserSocket> userSockets, final Socket socket, final UserSocket userSocket) {
+    synchronized void close(final HashSet<UserSocket> userSockets, final Socket socket, final UserSocket userSocket) {
         userSockets.remove(userSocket);
         final UserSocket clientUserSocket = userSocket.getClient().getConnectedUserSocket();
         if (clientUserSocket != null) {

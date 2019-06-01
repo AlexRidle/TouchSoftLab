@@ -1,6 +1,6 @@
 package Server;
 
-import Service.ExceptionUtils;
+import Service.ApplicationUtils;
 import Service.ServerLogger;
 import lombok.AllArgsConstructor;
 
@@ -39,7 +39,7 @@ public class SocketHandler implements Runnable{
         try{
             socket = serverSocket.accept();
         } catch (IOException e){
-            ServerLogger.logError(String.format("Произошла ошибка соединения с клиентом.\r\n%s", ExceptionUtils.getStackTrace(e)));
+            ServerLogger.logError(String.format("Произошла ошибка соединения с клиентом.\r\n%s", ApplicationUtils.convertThrowableToString(e)));
         }
         return socket;
     }

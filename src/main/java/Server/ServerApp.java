@@ -1,7 +1,7 @@
 package Server;
 
 import Service.ApplicationProperties;
-import Service.ExceptionUtils;
+import Service.ApplicationUtils;
 import Service.ServerLogger;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class ServerApp {
         try {
             PORT = Integer.valueOf(properties.getProperty("PORT"));
         } catch (IllegalArgumentException e) {
-            ServerLogger.logError(String.format("Произошла ошибка при настройке порта сервера. Проверьте значение порта в файле конфигурации приложения.\r\n%s", ExceptionUtils.getStackTrace(e)));
+            ServerLogger.logError(String.format("Произошла ошибка при настройке порта сервера. Проверьте значение порта в файле конфигурации приложения.\r\n%s", ApplicationUtils.convertThrowableToString(e)));
             System.exit(0);
         }
         try {
@@ -33,7 +33,7 @@ public class ServerApp {
             ServerLogger.logInfo(String.format("Сервер был запущен на порту %s", PORT)
             );
         } catch (IOException e) {
-            ServerLogger.logError(String.format("Произошла ошибка при запуске сервера на порту %s.\r\n%s", PORT, ExceptionUtils.getStackTrace(e)));
+            ServerLogger.logError(String.format("Произошла ошибка при запуске сервера на порту %s.\r\n%s", PORT, ApplicationUtils.convertThrowableToString(e)));
             System.exit(0);
         }
     }

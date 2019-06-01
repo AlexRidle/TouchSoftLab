@@ -254,3 +254,49 @@ java.net.SocketException: Connection reset
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
 	at java.lang.Thread.run(Thread.java:748)
 
+[31.05.2019 02:49:45][INFO] : Пользователь "null" отсоединился от чата
+[31.05.2019 02:51:47][INFO] : Пользователь "null" отсоединился от чата
+[01.06.2019 12:57:10][INFO] : Пользователь "null" отсоединился от чата
+[01.06.2019 12:58:45][INFO] : Пользователь "null" отсоединился от чата
+[01.06.2019 13:23:40][INFO] : Пользователь "null" отсоединился от чата
+[01.06.2019 13:30:44][ERROR] : Произошла ошибка при запуске сервера на порту 8080.
+java.net.BindException: Address already in use: JVM_Bind
+	at java.net.DualStackPlainSocketImpl.bind0(Native Method)
+	at java.net.DualStackPlainSocketImpl.socketBind(DualStackPlainSocketImpl.java:106)
+	at java.net.AbstractPlainSocketImpl.bind(AbstractPlainSocketImpl.java:387)
+	at java.net.PlainSocketImpl.bind(PlainSocketImpl.java:190)
+	at java.net.ServerSocket.bind(ServerSocket.java:375)
+	at java.net.ServerSocket.<init>(ServerSocket.java:237)
+	at java.net.ServerSocket.<init>(ServerSocket.java:128)
+	at Server.ServerApp.<init>(ServerApp.java:32)
+	at RunServer.main(RunServer.java:6)
+
+[01.06.2019 13:31:09][INFO] : Сервер был запущен на порту 8080
+[01.06.2019 13:31:25][INFO] : Пользователь "asd" подключился к чату
+[01.06.2019 13:31:31][INFO] : Пользователь "agent" подключился к чату
+[01.06.2019 13:31:35][INFO] : Пользователь "asd" соединился с агентом "agent"
+[01.06.2019 13:31:42][INFO] : Пользователь "agent" отсоединился от пользователя "asd"
+[01.06.2019 13:31:45][INFO] : Пользователь "asd" соединился с агентом "agent"
+[01.06.2019 13:31:50][INFO] : Пользователь "agent" отсоединился от пользователя "asd"
+[01.06.2019 13:31:50][INFO] : Пользователь "agent" отсоединился от чата
+[01.06.2019 13:31:55][WARN] : Пользователь "asd" пытался установить соединение, но не нашел свободных агентов
+[01.06.2019 13:31:58][WARN] : Пользователь "asd" пытался установить соединение, но не нашел свободных агентов
+[01.06.2019 13:32:03][INFO] : Пользователь "asd" отсоединился от чата
+[01.06.2019 13:32:03][ERROR] : Пользователь "asd" потерял соединение с сервером.
+java.net.SocketException: Connection reset
+	at java.net.SocketInputStream.read(SocketInputStream.java:210)
+	at java.net.SocketInputStream.read(SocketInputStream.java:141)
+	at sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:284)
+	at sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:326)
+	at sun.nio.cs.StreamDecoder.read(StreamDecoder.java:178)
+	at java.io.InputStreamReader.read(InputStreamReader.java:184)
+	at java.io.BufferedReader.fill(BufferedReader.java:161)
+	at java.io.BufferedReader.readLine(BufferedReader.java:324)
+	at java.io.BufferedReader.readLine(BufferedReader.java:389)
+	at Server.UserSocket.run(UserSocket.java:48)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
