@@ -1,11 +1,11 @@
 package Server;
 
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 import static org.mockito.Mockito.atLeastOnce;
@@ -13,10 +13,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class TestClientService {
 
-    private HashMap<String, String> clientInfo;
+    private JSONObject jsonClientInfo;
     private HashSet<UserSocket> userSockets;
     private ClientService clientService;
     private UserSocket userSocket;
@@ -24,7 +24,7 @@ public class TestClientService {
 
     @Before
     public void init() {
-        clientInfo = MockDataServer.getClientInfo();
+        jsonClientInfo = MockDataServer.getJsonClientInfo();
         clientService = mock(ClientService.class);
         userSocket = mock(UserSocket.class);
         userSockets = mock(HashSet.class);
@@ -32,8 +32,8 @@ public class TestClientService {
 
     @Test
     public void testRegisterClient(){
-        clientService.registerClient(clientInfo.toString(),userSocket);
-        verify(clientService,atLeastOnce()).registerClient(clientInfo.toString(),userSocket);
+        clientService.registerClient(jsonClientInfo,userSocket);
+        verify(clientService,atLeastOnce()).registerClient(jsonClientInfo,userSocket);
     }
 
     @Test

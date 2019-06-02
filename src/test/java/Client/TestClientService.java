@@ -1,5 +1,6 @@
 package Client;
 
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,7 +10,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.atLeastOnce;
@@ -20,7 +20,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class TestClientService {
 
-    private HashMap<String, String> clientInfo;
+    private JSONObject jsonClientInfo;
+    private JSONObject jsonMessage;
     private Socket socket;
     private ClientService mockClientService;
     private ClientService clientService;
@@ -30,7 +31,8 @@ public class TestClientService {
 
     @Before
     public void init() {
-        clientInfo = MockDataClient.getClientInfo();
+        jsonClientInfo = MockDataClient.getJsonClientInfo();
+        jsonMessage = MockDataClient.getJsonMessage();
         socket = mock(Socket.class);
         mockClientService = mock(ClientService.class);
         clientService = new ClientService();
@@ -40,14 +42,14 @@ public class TestClientService {
 
     @Test
     public void testClientRegister() {
-        when(mockClientService.clientRegister(systemIn)).thenReturn(clientInfo);
-        assertEquals(mockClientService.clientRegister(systemIn),clientInfo);
+        when(mockClientService.clientRegister(systemIn)).thenReturn(jsonClientInfo);
+        assertEquals(mockClientService.clientRegister(systemIn),jsonClientInfo);
     }
 
     @Test
     public void testSend() throws IOException {
         clientService.send("message",socketOut);
-        verify(socketOut,atLeastOnce()).write("message" + "\n");
+        verify(socketOut,atLeastOnce()).write(jsonMessage.toString() + "\n");
         verify(socketOut).flush();
     }
 

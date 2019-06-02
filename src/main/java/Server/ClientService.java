@@ -1,11 +1,9 @@
 package Server;
 
-import Service.ApplicationUtils;
 import Service.Role;
 import Service.ServerLogger;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 class ClientService {

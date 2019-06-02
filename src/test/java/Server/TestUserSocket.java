@@ -1,5 +1,6 @@
 package Server;
 
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,7 +9,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import static org.mockito.Mockito.atLeastOnce;
@@ -19,6 +19,7 @@ import static org.mockito.Mockito.verify;
 public class TestUserSocket {
 
     private HashSet<UserSocket> userSockets;
+    private JSONObject jsonMessage;
     private UserSocket userSocket;
     private BufferedWriter socketOut;
     private Socket socket;
@@ -26,6 +27,7 @@ public class TestUserSocket {
     @Before
     public void init(){
         userSockets = new HashSet<>();
+        jsonMessage = MockDataServer.getJsonMessage();
         userSocket = new UserSocket();
         userSockets.add(userSocket);
         userSocket.setClient(mock(Client.class));
@@ -36,7 +38,7 @@ public class TestUserSocket {
     @Test
     public void testSend() throws IOException {
         userSocket.send("message", socketOut);
-        verify(socketOut, atLeastOnce()).write("message" + "\n");
+        verify(socketOut, atLeastOnce()).write(jsonMessage.toString() + "\n");
         verify(socketOut, atLeastOnce()).flush();
     }
 
