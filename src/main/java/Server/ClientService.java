@@ -3,18 +3,20 @@ package Server;
 import Service.ApplicationUtils;
 import Service.Role;
 import Service.ServerLogger;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.HashSet;
 
 class ClientService {
 
-    void registerClient(String input, UserSocket userSocket) {
-        final HashMap<String, String> clientInfo = ApplicationUtils.convertStringToHashMap(input);
-        if (clientInfo.get("role").equalsIgnoreCase(Role.AGENT.toString())) {
-            userSocket.setClient(getNewClient(clientInfo.get("name"), Role.AGENT, true));
+    void registerClient(JSONObject input, UserSocket userSocket) {
+        final String role = input.getString("role");
+        final String name = input.getString("name");
+        if (role.equalsIgnoreCase(Role.AGENT.toString())) {
+            userSocket.setClient(getNewClient(name, Role.AGENT, true));
         } else {
-            userSocket.setClient(getNewClient(clientInfo.get("name"), Role.valueOf(clientInfo.get("role").toUpperCase()), false));
+            userSocket.setClient(getNewClient(name, Role.valueOf(role.toUpperCase()), false));
         }
 
         try {

@@ -5,6 +5,7 @@ import Service.Role;
 import Service.ServerLogger;
 import lombok.Getter;
 import lombok.Setter;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -26,6 +27,7 @@ public class UserSocket implements Runnable {
     private BufferedWriter socketOut;
     private HashSet<UserSocket> userSockets;
     private ClientService clientService;
+    private JSONObject jsonObject;
     private Client client;
 
     UserSocket(final Socket socket, final HashSet<UserSocket> userSockets) throws IOException {
@@ -55,7 +57,8 @@ public class UserSocket implements Runnable {
                 break;
             }
             if (client == null) {
-                clientService.registerClient(message, this);
+                jsonObject = new JSONObject(message);
+                clientService.registerClient(jsonObject, this);
             } else {
                 if (message.equalsIgnoreCase("/leave")) {
                     clientService.leave(this);

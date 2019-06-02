@@ -1,6 +1,7 @@
 package Client;
 
 import Service.ApplicationProperties;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,7 +21,8 @@ public class ClientApp {
     private final ClientService clientService;
     private final Properties properties;
     private final BufferedReader systemIn;
-    private final HashMap<String, String> clientInfo;
+    private final JSONObject clientInfo;
+//    private final HashMap<String, String> clientInfo;
     private final ExecutorService executorService;
     private String HOST;
     private int PORT;

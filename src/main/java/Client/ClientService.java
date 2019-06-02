@@ -1,6 +1,7 @@
 package Client;
 
 import Service.Role;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,8 +10,8 @@ import java.net.Socket;
 import java.util.HashMap;
 
 class ClientService {
-    HashMap<String, String> clientRegister(final BufferedReader systemIn) {
-        final HashMap<String, String> content = new HashMap<>();
+    JSONObject clientRegister(final BufferedReader systemIn) {
+        final JSONObject clientInfo = new JSONObject();
         String input;
         String[] splittedInput;
 
@@ -24,15 +25,14 @@ class ClientService {
                 input = systemIn.readLine();
                 splittedInput = input.split(" ");
             }
-
-            content.put("role", splittedInput[1]);
-            content.put("name", splittedInput[2]);
+            clientInfo.put("role", splittedInput[1]);
+            clientInfo.put("name", splittedInput[2]);
         } catch (IOException e) {
             System.out.println("Произошла ошибка при вводе команды");
             e.printStackTrace();
         }
 
-        return content;
+        return clientInfo;
     }
 
     private boolean isInputCorrect(String[] splittedInput){
