@@ -300,3 +300,44 @@ java.net.SocketException: Connection reset
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
 	at java.lang.Thread.run(Thread.java:748)
 
+[02.06.2019 13:17:59][INFO] : Сервер был запущен на порту 8080
+[02.06.2019 13:18:28][INFO] : Пользователь "client" подключился к чату
+[02.06.2019 13:18:32][WARN] : Пользователь "client" пытался установить соединение, но не нашел свободных агентов
+[02.06.2019 13:18:34][WARN] : Пользователь "client" пытался установить соединение, но не нашел свободных агентов
+[02.06.2019 13:18:45][INFO] : Пользователь "asd" подключился к чату
+[02.06.2019 13:18:50][INFO] : Пользователь "client" соединился с агентом "asd"
+[02.06.2019 15:41:26][INFO] : Сервер был запущен на порту 8080
+[02.06.2019 15:44:59][INFO] : Сервер был запущен на порту 8080
+[02.06.2019 15:45:14][INFO] : Сервер был запущен на порту 8080
+[02.06.2019 15:47:59][INFO] : Сервер был запущен на порту 8080
+[02.06.2019 16:01:52][INFO] : Сервер был запущен на порту 8080
+[02.06.2019 16:02:02][INFO] : Пользователь "client" подключился к чату
+[02.06.2019 16:02:08][WARN] : Пользователь "client" пытался установить соединение, но не нашел свободных агентов
+[02.06.2019 16:02:11][WARN] : Пользователь "client" пытался установить соединение, но не нашел свободных агентов
+[02.06.2019 16:02:12][WARN] : Пользователь "client" пытался установить соединение, но не нашел свободных агентов
+[02.06.2019 16:02:44][INFO] : Пользователь "agent" подключился к чату
+[02.06.2019 16:02:53][INFO] : Пользователь "client" соединился с агентом "agent"
+[02.06.2019 16:03:00][INFO] : Пользователь "agent" отсоединился от пользователя "client"
+[02.06.2019 16:03:05][INFO] : Пользователь "client" соединился с агентом "agent"
+[02.06.2019 16:03:10][INFO] : Пользователь "agent" отсоединился от пользователя "client"
+[02.06.2019 16:03:10][INFO] : Пользователь "agent" отсоединился от чата
+[02.06.2019 16:03:10][ERROR] : Пользователь "agent" потерял соединение с сервером.
+java.net.SocketException: Connection reset
+	at java.net.SocketInputStream.read(SocketInputStream.java:210)
+	at java.net.SocketInputStream.read(SocketInputStream.java:141)
+	at sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:284)
+	at sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:326)
+	at sun.nio.cs.StreamDecoder.read(StreamDecoder.java:178)
+	at java.io.InputStreamReader.read(InputStreamReader.java:184)
+	at java.io.BufferedReader.fill(BufferedReader.java:161)
+	at java.io.BufferedReader.readLine(BufferedReader.java:324)
+	at java.io.BufferedReader.readLine(BufferedReader.java:389)
+	at Server.UserSocket.run(UserSocket.java:50)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+[02.06.2019 16:03:13][WARN] : Пользователь "client" пытался установить соединение, но не нашел свободных агентов
+[02.06.2019 16:03:16][INFO] : Пользователь "client" отсоединился от чата

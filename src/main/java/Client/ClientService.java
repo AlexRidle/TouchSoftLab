@@ -7,7 +7,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
 
 class ClientService {
     JSONObject clientRegister(final BufferedReader systemIn) {
@@ -46,8 +45,10 @@ class ClientService {
     }
 
     void send(String message, BufferedWriter socketOut){
+        JSONObject jsonMessage = new JSONObject();
+        jsonMessage.put("message", message);
         try{
-            socketOut.write(message + "\n");
+            socketOut.write(jsonMessage.toString() + "\n");
             socketOut.flush();
         } catch (IOException e){
             System.out.println("Произошла ошибка при отправлении сообщения. Попробуйте еще раз: ");

@@ -11,7 +11,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,8 +20,7 @@ public class ClientApp {
     private final ClientService clientService;
     private final Properties properties;
     private final BufferedReader systemIn;
-    private final JSONObject clientInfo;
-//    private final HashMap<String, String> clientInfo;
+    private final JSONObject jsonClientInfo;
     private final ExecutorService executorService;
     private String HOST;
     private int PORT;
@@ -35,7 +33,7 @@ public class ClientApp {
         properties = ApplicationProperties.getProperties();
         clientService = new ClientService();
         systemIn = new BufferedReader(new InputStreamReader(System.in));
-        clientInfo = clientService.clientRegister(systemIn);
+        jsonClientInfo = clientService.clientRegister(systemIn);
 
         try {
             HOST = ApplicationProperties.getProperties().getProperty("HOST");
@@ -70,7 +68,7 @@ public class ClientApp {
         }
 
         try {
-            socketOut.write(clientInfo.toString() + "\n");
+            socketOut.write(jsonClientInfo.toString() + "\n");
             socketOut.flush();
         } catch (IOException e) {
             System.out.println("Произошла ошибка при отправке информации на сервер");

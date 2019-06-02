@@ -27,7 +27,6 @@ public class UserSocket implements Runnable {
     private BufferedWriter socketOut;
     private HashSet<UserSocket> userSockets;
     private ClientService clientService;
-    private JSONObject jsonObject;
     private Client client;
 
     UserSocket(final Socket socket, final HashSet<UserSocket> userSockets) throws IOException {
@@ -44,10 +43,11 @@ public class UserSocket implements Runnable {
 
     @Override
     public void run() {
+        String rawMessage;
         String message;
         while (!socket.isClosed()) {
             try {
-                message = socketIn.readLine();
+                rawMessage = socketIn.readLine();
             } catch (IOException e) {
                 close(userSockets, socket, this);
                 ServerLogger.logError(String.format("Пользователь \"%s\" потерял соединение с сервером.\r\n%s",
@@ -57,9 +57,11 @@ public class UserSocket implements Runnable {
                 break;
             }
             if (client == null) {
-                jsonObject = new JSONObject(message);
-                clientService.registerClient(jsonObject, this);
+                JSONObject jsonMessage = new JSONObject(rawMessage);
+                clientService.registerClient(jsonMessage, this);
             } else {
+                JSONObject jsonMessage = new JSONObject(rawMessage);
+                message = jsonMessage.getString("message");
                 if (message.equalsIgnoreCase("/leave")) {
                     clientService.leave(this);
                 } else if (message.equalsIgnoreCase("/exit")) {
@@ -94,8 +96,10 @@ public class UserSocket implements Runnable {
     }
 
     void send(final String message, final BufferedWriter socketOut) {
+        JSONObject jsonMessage = new JSONObject();
+        jsonMessage.put("message", message);
         try {
-            socketOut.write(message + "\n");
+            socketOut.write(jsonMessage.toString() + "\n");
             socketOut.flush();
         } catch (IOException e) {
             close(userSockets, socket, this);
