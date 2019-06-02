@@ -1,6 +1,6 @@
 package Server;
 
-import Service.ExceptionUtils;
+import Service.ApplicationUtils;
 import Service.ServerLogger;
 import lombok.AllArgsConstructor;
 
@@ -8,12 +8,14 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @AllArgsConstructor
 public class SocketHandler implements Runnable{
 
-    private ServerSocket serverSocket;
-    private HashSet<UserSocket> userSockets;
+    private final ServerSocket serverSocket;
+    private final HashSet<UserSocket> userSockets;
 
     @Override
     public void run(){
@@ -22,7 +24,8 @@ public class SocketHandler implements Runnable{
             if (socket != null) {
                 try{
                     UserSocket userSocket = new UserSocket(socket, userSockets);
-                    new Thread(userSocket).start();
+                    ExecutorService executorService = Executors.newSingleThreadExecutor();
+                    executorService.submit(userSocket);
                     userSockets.add(userSocket);
                 } catch (IOException e){
                     e.printStackTrace();
@@ -36,7 +39,7 @@ public class SocketHandler implements Runnable{
         try{
             socket = serverSocket.accept();
         } catch (IOException e){
-            ServerLogger.logError(String.format("Произошла ошибка соединения с клиентом.\r\n%s", ExceptionUtils.getStackTrace(e)));
+            ServerLogger.logError(String.format("Произошла ошибка соединения с клиентом.\r\n%s", ApplicationUtils.convertThrowableToString(e)));
         }
         return socket;
     }

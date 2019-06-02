@@ -1,18 +1,18 @@
 package Client;
 
 import Service.Role;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
 
 class ClientService {
-    HashMap<String, String> clientRegister(final BufferedReader systemIn) {
+    JSONObject clientRegister(final BufferedReader systemIn) {
+        final JSONObject clientInfo = new JSONObject();
         String input;
         String[] splittedInput;
-        HashMap<String, String> content = null;
 
         try {
             System.out.println("Введите команду /register и свою роль с именем через пробел: ");
@@ -24,16 +24,14 @@ class ClientService {
                 input = systemIn.readLine();
                 splittedInput = input.split(" ");
             }
-
-            content = new HashMap<>();
-            content.put("role", splittedInput[1]);
-            content.put("name", splittedInput[2]);
+            clientInfo.put("role", splittedInput[1]);
+            clientInfo.put("name", splittedInput[2]);
         } catch (IOException e) {
             System.out.println("Произошла ошибка при вводе команды");
             e.printStackTrace();
         }
 
-        return content;
+        return clientInfo;
     }
 
     private boolean isInputCorrect(String[] splittedInput){
@@ -47,8 +45,10 @@ class ClientService {
     }
 
     void send(String message, BufferedWriter socketOut){
+        JSONObject jsonMessage = new JSONObject();
+        jsonMessage.put("message", message);
         try{
-            socketOut.write(message + "\n");
+            socketOut.write(jsonMessage.toString() + "\n");
             socketOut.flush();
         } catch (IOException e){
             System.out.println("Произошла ошибка при отправлении сообщения. Попробуйте еще раз: ");
