@@ -7,21 +7,21 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class ClientSender implements Runnable {
+    private final Socket socket;
+    private final ClientService clientService;
+    private final BufferedWriter socketOut;
+    private final BufferedReader systemIn;
     private String userInput;
-    private BufferedReader systemIn;
-    private ClientService clientService;
-    private Socket socket;
-    private BufferedWriter socketOut;
 
     ClientSender(final Socket socket, final BufferedWriter socketOut, final ClientService clientService) {
         this.socket = socket;
         this.socketOut = socketOut;
         this.clientService = clientService;
+        systemIn = new BufferedReader(new InputStreamReader(System.in));
     }
 
     @Override
     public void run() {
-        systemIn = new BufferedReader(new InputStreamReader(System.in));
         while(true){
             userInput = null;
             try{

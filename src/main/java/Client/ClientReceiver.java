@@ -1,15 +1,16 @@
 package Client;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
 
 public class ClientReceiver implements Runnable {
-    private ClientService clientService;
-    private Socket socket;
-    private BufferedReader socketIn;
+    private final ClientService clientService;
+    private final Socket socket;
+    private final BufferedReader socketIn;
+    private JSONObject jsonMessage;
 
     ClientReceiver(final Socket socket, final BufferedReader socketIn, final ClientService clientService) {
         this.socket = socket;
@@ -20,18 +21,19 @@ public class ClientReceiver implements Runnable {
     @Override
     public void run() {
         while (!socket.isClosed()) {
-            String message = null;
+            String rawMessage = null;
             try {
-                message = socketIn.readLine();
+                rawMessage = socketIn.readLine();
             } catch (IOException e) {
                 System.out.println("Соединение было разорвано");
                 clientService.close(socket);
             }
-            if (message == null){
+            if (rawMessage == null){
                 System.out.println("Сервер разорвал соединение");
                 clientService.close(socket);
             } else {
-                System.out.println(message);
+                jsonMessage = new JSONObject(rawMessage);
+                System.out.println(jsonMessage.getString("message"));
             }
         }
     }

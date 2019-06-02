@@ -7,7 +7,7 @@ import java.util.Properties;
 public class ApplicationProperties {
     public static Properties getProperties() {
 
-        Properties properties = new Properties();
+        final Properties properties = new Properties();
 
         try (InputStream input = ApplicationProperties.class.getClassLoader().getResourceAsStream("application.properties")) {
 
@@ -17,8 +17,6 @@ public class ApplicationProperties {
             }
 
             properties.load(input);
-
-            return properties;
 
         } catch (IOException e) {
             e.printStackTrace();

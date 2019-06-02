@@ -1,11 +1,11 @@
 package Server;
 
-import Service.ExceptionUtils;
+import Service.ApplicationUtils;
 import Service.Role;
 import Service.ServerLogger;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,15 +20,14 @@ import java.util.HashSet;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class UserSocket implements Runnable {
 
     private Socket socket;
     private BufferedReader socketIn;
     private BufferedWriter socketOut;
-    private Client client;
     private HashSet<UserSocket> userSockets;
     private ClientService clientService;
+    private Client client;
 
     UserSocket(final Socket socket, final HashSet<UserSocket> userSockets) throws IOException {
         this.socket = socket;
@@ -38,23 +37,31 @@ public class UserSocket implements Runnable {
         socketOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
     }
 
+    UserSocket(){
+
+    }
+
     @Override
     public void run() {
+        String rawMessage;
         String message;
         while (!socket.isClosed()) {
             try {
-                message = socketIn.readLine();
+                rawMessage = socketIn.readLine();
             } catch (IOException e) {
                 close(userSockets, socket, this);
                 ServerLogger.logError(String.format("Пользователь \"%s\" потерял соединение с сервером.\r\n%s",
                         this.getClient().getName(),
-                        ExceptionUtils.getStackTrace(e))
+                        ApplicationUtils.convertThrowableToString(e))
                 );
                 break;
             }
             if (client == null) {
-                clientService.registerClient(message, this);
+                JSONObject jsonMessage = new JSONObject(rawMessage);
+                clientService.registerClient(jsonMessage, this);
             } else {
+                JSONObject jsonMessage = new JSONObject(rawMessage);
+                message = jsonMessage.getString("message");
                 if (message.equalsIgnoreCase("/leave")) {
                     clientService.leave(this);
                 } else if (message.equalsIgnoreCase("/exit")) {
@@ -89,17 +96,19 @@ public class UserSocket implements Runnable {
     }
 
     void send(final String message, final BufferedWriter socketOut) {
+        JSONObject jsonMessage = new JSONObject();
+        jsonMessage.put("message", message);
         try {
-            socketOut.write(message + "\n");
+            socketOut.write(jsonMessage.toString() + "\n");
             socketOut.flush();
         } catch (IOException e) {
             close(userSockets, socket, this);
         }
     }
 
-    private synchronized void close(final HashSet<UserSocket> userSockets, final Socket socket, final UserSocket userSocket) {
+    synchronized void close(final HashSet<UserSocket> userSockets, final Socket socket, final UserSocket userSocket) {
         userSockets.remove(userSocket);
-        UserSocket clientUserSocket = userSocket.getClient().getConnectedUserSocket();
+        final UserSocket clientUserSocket = userSocket.getClient().getConnectedUserSocket();
         if (clientUserSocket != null) {
             clientUserSocket.send(
                     String.format("%s завершил диалог.", userSocket.getClient().getName()),
