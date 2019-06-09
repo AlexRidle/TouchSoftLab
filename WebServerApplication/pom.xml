@@ -42,6 +42,20 @@
     <packaging>war</packaging>
 
     <dependencies>
+        <!--Bootstrap-->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>4.1.3</version>
+        </dependency>
+
+        <!--JQuery-->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+
         <!--SLF4J with Log4j-->
         <dependency>
             <groupId>org.slf4j</groupId>
