@@ -1,18 +1,23 @@
-package Server;
+package Entity;
 
-import Service.Role;
+import Enumeration.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
+import javax.websocket.Session;
+
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-class Client {
+public class Client {
+
     private String name;
     private Role role;
     private boolean isFree;
-    private UserSocket connectedUserSocket;
+    private Session session;
+    private Session connectedSession;
+
 }

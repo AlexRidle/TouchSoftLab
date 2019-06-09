@@ -1,4 +1,4 @@
-package Service;
+package Enumeration;
 
 public enum Role {
     CLIENT, AGENT;
@@ -10,5 +10,15 @@ public enum Role {
             }
         }
         return false;
+    }
+
+    public static Role getUserRole(String role) {
+        role = role.toLowerCase();
+        switch (role) {
+            case "agent":
+                return Role.AGENT;
+            default:
+                return Role.CLIENT;
+        }
     }
 }

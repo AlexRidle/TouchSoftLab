@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 public class ConsoleService {
@@ -66,7 +68,7 @@ public class ConsoleService {
             System.exit(0);
         }
 
-        return new URI(String.format("ws://%s:%s/%s/chat/%s/",HOST, PORT, role, name));
+        return new URI(String.format("ws://%s:%s/%s/%s/",HOST, PORT, role, name));
     }
 
     private boolean isInputCorrect(String[] splittedInput) {
@@ -83,19 +85,30 @@ public class ConsoleService {
         String message;
         while (true) {
             try {
-                message = systemIn.readLine();
+                while(true){
+                    message = systemIn.readLine().trim();
+                    if(!message.equals("")){
+                        break;
+                    }
+                    System.out.println("Сообщение не может быть пустым!");
+                }
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("content", message);
+                jsonObject.put("timestamp", getTimeStamp());
+                client.send(jsonObject.toString());
                 if (message.equalsIgnoreCase("/exit")) {
                     client.close();
                     break;
                 }
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("message", message);
-                client.send(jsonObject.toString());
             } catch (IOException e) {
                 System.out.println("Произошла ошибка при вводе сообщения");
                 e.printStackTrace();
             }
         }
+    }
+
+    private String getTimeStamp() {
+        return String.format("[%s]", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
     }
 
     public void run(){
