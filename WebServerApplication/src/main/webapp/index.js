@@ -1,4 +1,5 @@
 var sendMsg = document.querySelector("#send");
+var leaveConv = document.querySelector("#leave");
 var messageInput = document.querySelector('#message');
 var registration = document.querySelector('#registration');
 var registrationInput = document.querySelector('#name');
@@ -56,6 +57,15 @@ window.onload = function () {
         messageInput.value = "";
     }
 
+    leaveConv.onclick = function (event) {
+        event.preventDefault();
+        var msg = new Object();
+        msg.from = userName;
+        msg.content = "/leave";
+        msg.timestamp = getTimestamp();
+        socket.send(JSON.stringify(msg));
+    }
+
 }
 
 window.onbeforeunload = function () {
@@ -63,7 +73,10 @@ window.onbeforeunload = function () {
 }
 
 function connectClient() {
-    socket = new WebSocket("ws://localhost:8080/" + userRole + "/" + userName);
+
+    var host = document.location.host;
+    var pathname = document.location.pathname;
+    socket = new WebSocket("ws://" + host + pathname + "/" + userRole + "/" + userName);
 
     socket.onopen = function (event) {
     }
@@ -119,12 +132,12 @@ function connectClient() {
 function getTimestamp() {
     var today = new Date();
     var timestamp = "["
-        + today.getDate() + "."
-        + today.getMonth() + "."
+        + '0' + today.getDate().slice(-2) + "."
+        + '0' + today.getMonth().slice(-2) + "."
         + today.getFullYear() + " "
-        + today.getHours() + ":"
-        + today.getMinutes() + ":"
-        + today.getSeconds() + "]";
+        + '0' + today.getHours().slice(-2) + ":"
+        + '0' + today.getMinutes().slice(-2) + ":"
+        + '0' + today.getSeconds().slice(-2) + "]";
     return timestamp;
 }
 

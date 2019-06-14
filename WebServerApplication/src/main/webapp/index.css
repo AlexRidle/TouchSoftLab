@@ -83,6 +83,13 @@ button.primary {
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
     color: #fff;
 }
+
+button.danger {
+    background-color: #f24235;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
+    color: #fff;
+}
+
 button.accent {
     background-color: #128ff2;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
@@ -188,7 +195,7 @@ button.accent {
 }
 #messageForm .input-group input {
     float: left;
-    width: calc(100% - 85px);
+    width: calc(100% - 85*2px);
 }
 #messageForm .input-group button {
     float: left;
