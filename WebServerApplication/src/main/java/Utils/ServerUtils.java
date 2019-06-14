@@ -124,9 +124,9 @@ public class ServerUtils {
 
             connectedClient.setConnectedSession(null);
             connectedClient.setFree(true);
-            users.remove(session.getId());
         }
 
+        users.remove(session.getId());
         ServerLogger.logInfo(String.format("Пользователь \"%s\" отсоединился от чата", client.getName()));
     }
 

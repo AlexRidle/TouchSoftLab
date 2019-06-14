@@ -28,7 +28,6 @@ window.onload = function () {
             userName = inputData[2];
             userRole = inputData[1];
             if (inputData[1].toUpperCase() === "CLIENT" || inputData[1].toUpperCase() === "AGENT") {
-                // socket = new WebSocket("ws://localhost:8080/WebServerApplication/" + userRole + "/" + userName);
                 connectClient();
                 registrationForm.classList.add('hidden');
                 chatForm.classList.remove('hidden');
