@@ -131,14 +131,32 @@ function connectClient() {
 
 function getTimestamp() {
     var today = new Date();
-    var timestamp = "["
-        + '0' + today.getDate().slice(-2) + "."
-        + '0' + today.getMonth().slice(-2) + "."
-        + today.getFullYear() + " "
-        + '0' + today.getHours().slice(-2) + ":"
-        + '0' + today.getMinutes().slice(-2) + ":"
-        + '0' + today.getSeconds().slice(-2) + "]";
-    return timestamp;
+    var dd = today.getDate();
+    var MM = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+
+    var ss = today.getSeconds();
+    var mm = today.getMinutes();
+    var HH = today.getHours();
+
+    if (dd < 10) {
+        dd = '0' + dd
+    }
+
+    if (MM < 10) {
+        MM = '0' + MM
+    }
+    if (ss < 10) {
+        ss = '0' + ss
+    }
+    if (mm < 10) {
+        mm = '0' + mm
+    }
+    if (HH < 10) {
+        HH = '0' + HH
+    }
+
+    return '[' + dd + '.' + MM + '.' + yyyy + ' ' + HH + ':' + mm + ':' + ss + ']';
 }
 
 function getColor() {
