@@ -43,7 +43,10 @@ window.onload = function () {
     sendMsg.onclick = function (event) {
         event.preventDefault();
         var content = messageInput.value.trim();
-        if (content !== "") {
+        if (content.toUpperCase() === "/EXIT") {
+            socket.onclose();
+            window.close();
+        } else if (content !== "") {
             var msg = new Object();
             msg.from = userName;
             msg.content = content;
