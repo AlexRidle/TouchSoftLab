@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TouchSoft Чат</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="shortcut icon" href="favicon.ico"/>
+</head>
+<body>
+<noscript>
+    <h2>Приносим извинения! Ваш браузер не поддерживает Javascript</h2>
+</noscript>
+<div id="username-page">
+    <div class="username-page-container">
+        <h1 class="title">Пожалуйста, зарегистрируйтесь</h1>
+        <h3 class="title">Введите /register, затем вашу роль и имя</h3>
+        <form id="usernameForm" name="usernameForm">
+            <div class="form-group">
+                <input type="text" id="name" placeholder="/register role name" autocomplete="off" class="form-control" />
+            </div>
+            <div class="form-group">
+                <button id="registration" type="submit" class="accent username-submit">Зарегистрироваться</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="chat-page" class="hidden">
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>TouchSoft чат</h2>
+        </div>
+        <ul id="message-area">
+
+        </ul>
+        <form id="messageForm" name="messageForm">
+            <div class="form-group">
+                <div class="input-group clearfix">
+                    <input type="text" id="message" placeholder="Введите сообщение..." autocomplete="off" class="form-control"/>
+                    <button  id="send" type="submit" class="primary" value="Normal Submit">Отпр.</button>
+                    <button  id="leave" type="button" class="danger" value="Leave Button">Покин.</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="index.js"></script>
+</body>
+</html>
