@@ -1,7 +1,7 @@
-package WebSocketClient;
+package Service;
 
-import Service.ApplicationProperties;
-import Service.Role;
+import Client.WebConsoleClient;
+import Enumeration.Role;
 import org.java_websocket.client.WebSocketClient;
 import org.json.JSONObject;
 
@@ -31,7 +31,7 @@ public class ConsoleService {
                 input = systemIn.readLine();
                 splittedInput = input.split(" ");
             }
-            client = new ConsoleClient(getClientURI(splittedInput[1], splittedInput[2]));
+            client = new WebConsoleClient(getClientURI(splittedInput[1], splittedInput[2]));
             client.connect();
         } catch (URISyntaxException e) {
             System.out.println("Произошла ошибка при подключении к сокету");

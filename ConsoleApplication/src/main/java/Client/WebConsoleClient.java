@@ -1,6 +1,6 @@
-package WebSocketClient;
+package Client;
 
-import Service.ApplicationUtils;
+import Utils.ApplicationUtils;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONObject;
@@ -8,9 +8,9 @@ import org.json.JSONObject;
 import java.net.URI;
 
 
-public class ConsoleClient extends WebSocketClient {
+public class WebConsoleClient extends WebSocketClient {
 
-    ConsoleClient(URI serverURI) {
+    public WebConsoleClient(URI serverURI) {
         super(serverURI);
     }
 

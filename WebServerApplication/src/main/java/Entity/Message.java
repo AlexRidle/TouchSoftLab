@@ -25,22 +25,18 @@ public class Message {
     }
 
     @Override
-    public String toString() {
-        return super.toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Message message = (Message) o;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Message message = (Message) object;
         return Objects.equals(from, message.from) &&
                 Objects.equals(to, message.to) &&
-                Objects.equals(this.content, message.content);
+                Objects.equals(content, message.content) &&
+                Objects.equals(timestamp, message.timestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(from, to, content);
+        return Objects.hash(from, to, content, timestamp);
     }
 }

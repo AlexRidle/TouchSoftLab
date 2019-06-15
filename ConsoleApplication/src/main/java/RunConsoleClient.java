@@ -1,4 +1,4 @@
-import WebSocketClient.ConsoleService;
+import Service.ConsoleService;
 
 public class RunConsoleClient {
 

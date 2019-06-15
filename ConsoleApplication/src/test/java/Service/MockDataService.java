@@ -1,6 +1,5 @@
 package Service;
 
-import java.util.HashMap;
 import java.util.Properties;
 
 class MockDataService {
@@ -12,13 +11,4 @@ class MockDataService {
         return properties;
     }
 
-    static HashMap<String, String> getHashMap(){
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("name","string");
-        return hashMap;
-    }
-
-    static String getString(){
-        return "{name=string}";
-    }
 }
