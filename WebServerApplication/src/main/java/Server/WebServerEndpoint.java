@@ -6,7 +6,7 @@ import MessageCoders.MessageDecoder;
 import MessageCoders.MessageEncoder;
 import Service.ServerLogger;
 import Utils.ApplicationUtils;
-import Utils.ServerUtils;
+import Service.ServerService;
 
 import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
@@ -25,30 +25,30 @@ import static Utils.ChatUtils.getTimeStamp;
 public class WebServerEndpoint {
 
     private static HashMap<String, Client> users = new HashMap<>();
-    private ServerUtils serverUtils = new ServerUtils(users);
+    private ServerService serverService = new ServerService(users);
 
     @OnOpen
     public void onOpen(Session session, @PathParam("username") String username, @PathParam("userrole") String userrole) throws IOException, EncodeException {
-        Client client = serverUtils.registerClient(username, userrole, session);
+        Client client = serverService.registerClient(username, userrole, session);
 
         Message message = new Message();
         message.setFrom("SERVER");
         message.setTimestamp(getTimeStamp());
         message.setContent(String.format("Вы подключились к чату под логином \"%s\"", username));
 
-        serverUtils.sendMessage(message, client);
+        serverService.sendMessage(message, client);
 
         ServerLogger.logInfo(String.format("Пользователь \"%s\" подключился к чату", username));
     }
 
     @OnMessage
     public void onMessage(Session session, Message message) throws IOException, EncodeException {
-        serverUtils.handleMessage(session, message);
+        serverService.handleMessage(session, message);
     }
 
     @OnClose
     synchronized public void onClose(Session session) throws IOException, EncodeException {
-        serverUtils.closeConnection(session);
+        serverService.closeConnection(session);
     }
 
     @OnError

@@ -1,8 +1,7 @@
-package Service;
+package Utils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.HashMap;
 
 public class ApplicationUtils {
     public static String convertThrowableToString(Throwable throwable) {

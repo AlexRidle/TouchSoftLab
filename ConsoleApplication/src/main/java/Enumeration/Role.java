@@ -1,4 +1,4 @@
-package Service;
+package Enumeration;
 
 public enum Role {
     CLIENT, AGENT;

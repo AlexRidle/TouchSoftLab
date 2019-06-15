@@ -1,10 +1,9 @@
-package Utils;
+package Service;
 
 import Entity.Client;
 import Entity.Message;
 import Enumeration.MessageType;
 import Enumeration.Role;
-import Service.ServerLogger;
 
 import javax.websocket.EncodeException;
 import javax.websocket.Session;
@@ -13,11 +12,11 @@ import java.util.HashMap;
 
 import static Utils.ChatUtils.getTimeStamp;
 
-public class ServerUtils {
+public class ServerService {
 
     private final HashMap<String, Client> users;
 
-    public ServerUtils(HashMap<String, Client> users) {
+    public ServerService(HashMap<String, Client> users) {
         this.users = users;
     }
 
