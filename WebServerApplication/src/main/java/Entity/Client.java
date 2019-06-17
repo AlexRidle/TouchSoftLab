@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.websocket.Session;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 @Setter
 @Getter
@@ -19,5 +21,6 @@ public class Client {
     private boolean isFree;
     private Session session;
     private Session connectedSession;
+    private LinkedList<Message> queuedMessages;
 
 }

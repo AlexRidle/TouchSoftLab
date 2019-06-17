@@ -18,6 +18,7 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import static Utils.ChatUtils.getTimeStamp;
 
@@ -25,7 +26,8 @@ import static Utils.ChatUtils.getTimeStamp;
 public class WebServerEndpoint {
 
     private static HashMap<String, Client> users = new HashMap<>();
-    private ServerService serverService = new ServerService(users);
+    private static LinkedList<String> usersQueue = new LinkedList<>();
+    private ServerService serverService = new ServerService(users, usersQueue);
 
     @OnOpen
     public void onOpen(Session session, @PathParam("username") String username, @PathParam("userrole") String userrole) throws IOException, EncodeException {
@@ -37,6 +39,7 @@ public class WebServerEndpoint {
         message.setContent(String.format("Вы подключились к чату под логином \"%s\"", username));
 
         serverService.sendMessage(message, client);
+        serverService.checkStoredMessagesAndConnectIfAgent(client);
 
         ServerLogger.logInfo(String.format("Пользователь \"%s\" подключился к чату", username));
     }
