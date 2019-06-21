@@ -4,6 +4,7 @@ import Entity.Client;
 import Entity.Message;
 import Enumeration.MessageType;
 import Enumeration.Role;
+import Server.WebServerEndpoint;
 
 import javax.websocket.EncodeException;
 import javax.websocket.Session;
@@ -15,15 +16,10 @@ import static Utils.ChatUtils.getTimeStamp;
 
 public class ServerService {
 
-    private final HashMap<String, Client> users;
-    private final LinkedList<String> usersQueue;
+    private static final HashMap<String, Client> users = WebServerEndpoint.getUsers();
+    private static final LinkedList<String> usersQueue = WebServerEndpoint.getUsersQueue();
 
-    public ServerService(HashMap<String, Client> users, LinkedList<String> usersQueue) {
-        this.users = users;
-        this.usersQueue = usersQueue;
-    }
-
-    public Client registerClient(String name, String role, Session session) {
+    static public Client registerClient(String name, String role, Session session) {
         Client client;
         switch (Role.getUserRole(role)) {
             case AGENT:
@@ -37,7 +33,7 @@ public class ServerService {
         return client;
     }
 
-    private Client getNewClient(String name, Role role, boolean isFree, Session session) {
+    static private Client getNewClient(String name, Role role, boolean isFree, Session session) {
         final Client client = new Client();
         client.setName(name);
         client.setRole(role);
@@ -47,7 +43,7 @@ public class ServerService {
         return client;
     }
 
-    private boolean connectFreeAgentToClient(HashMap<String, Client> users, Client client, Message message) throws IOException, EncodeException {
+    static private boolean connectFreeAgentToClient(HashMap<String, Client> users, Client client, Message message) throws IOException, EncodeException {
         Client agent = getFreeAgent(users);
         client.setConnectedSession(
                 agent == null ? null : agent.getSession()
@@ -68,7 +64,7 @@ public class ServerService {
         }
     }
 
-    private synchronized void storeMessage(final Client client, final Message message) throws IOException, EncodeException {
+    static private synchronized void storeMessage(final Client client, final Message message) throws IOException, EncodeException {
         if (!usersQueue.contains(client.getSession().getId())) {
             sendMessage(new Message("SERVER",
                     "На данный момент все агенты заняты. На ваше сообщение ответит первый освободившийся агент",
@@ -81,7 +77,7 @@ public class ServerService {
         client.getQueuedMessages().add(message);
     }
 
-    private synchronized Client getFreeAgent(final HashMap<String, Client> users) {
+    static private synchronized Client getFreeAgent(final HashMap<String, Client> users) {
         for (Client client : users.values()) {
             if (client.getRole() == Role.AGENT && client.isFree()) {
                 client.setFree(false);
@@ -91,7 +87,7 @@ public class ServerService {
         return null;
     }
 
-    public void handleMessage(final Session session, final Message message) throws IOException, EncodeException {
+    static public void handleMessage(final Session session, final Message message) throws IOException, EncodeException {
         Client client = users.get(session.getId());
 
         switch (MessageType.getMessageType(message.getContent())) {
@@ -121,7 +117,7 @@ public class ServerService {
         }
     }
 
-    public synchronized void closeConnection(Session session) throws IOException, EncodeException {
+    static public synchronized void closeConnection(Session session) throws IOException, EncodeException {
         Client client = users.get(session.getId());
         Message message;
 
@@ -137,18 +133,19 @@ public class ServerService {
 
             connectedClient.setConnectedSession(null);
             connectedClient.setFree(true);
+            checkStoredMessagesAndConnectIfAgent(connectedClient);
+        } else {
+            int fromIndex = usersQueue.indexOf(session.getId());
+            usersQueue.remove(session.getId());
+            notifyQueuedUsersFromIndex(fromIndex);
         }
 
         users.remove(session.getId());
 
-        int fromIndex = usersQueue.indexOf(session.getId());
-        usersQueue.remove(session.getId());
-        notifyQueuedUsersFromIndex(fromIndex);
-
         ServerLogger.logInfo(String.format("Пользователь \"%s\" отсоединился от чата", client.getName()));
     }
 
-    private synchronized void disconnectUser(Client client) throws IOException, EncodeException {
+    static private synchronized void disconnectUser(Client client) throws IOException, EncodeException {
         Message message;
         if (client.getConnectedSession() != null) {
             Client connectedClient = users.get(client.getConnectedSession().getId());
@@ -190,11 +187,11 @@ public class ServerService {
         }
     }
 
-    public void sendMessage(Message message, Client clientUser) throws IOException, EncodeException {
+    static public void sendMessage(Message message, Client clientUser) throws IOException, EncodeException {
         clientUser.getSession().getBasicRemote().sendObject(message);
     }
 
-    public synchronized void checkStoredMessagesAndConnectIfAgent(final Client agent) throws IOException, EncodeException {
+    static public synchronized void checkStoredMessagesAndConnectIfAgent(final Client agent) throws IOException, EncodeException {
         if (agent.getRole() == Role.AGENT) {
             if (!usersQueue.isEmpty()) {
                 Client client = users.get(usersQueue.getFirst());
@@ -232,9 +229,9 @@ public class ServerService {
 
     }
 
-    private synchronized void notifyQueuedUsersFromIndex(int fromIndex) throws IOException, EncodeException {
+    static private synchronized void notifyQueuedUsersFromIndex(int fromIndex) throws IOException, EncodeException {
         Client client;
-        for (int index = fromIndex; index < usersQueue.size(); index++) {
+        for (int index = fromIndex; index < usersQueue.size() && index != -1; index++) {
             client = users.get(usersQueue.get(index));
             sendMessage(new Message("SERVER",
                     "Ваша позиция в очереди: " + (index + 1),
