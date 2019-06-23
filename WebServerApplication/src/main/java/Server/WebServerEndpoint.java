@@ -26,6 +26,8 @@ import static Utils.ChatUtils.getTimeStamp;
 public class WebServerEndpoint {
 
     private static HashMap<String, Client> users = new HashMap<>();
+    // Есть вероятность, что к usersQueue могут получить доступ одновременно несколько потоков, поэтому доступ к ней желательно сделать 
+    // синхронизированным или залоченным
     private static LinkedList<String> usersQueue = new LinkedList<>();
     private ServerService serverService = new ServerService(users, usersQueue);
 
