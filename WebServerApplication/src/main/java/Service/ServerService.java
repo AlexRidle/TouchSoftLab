@@ -43,6 +43,7 @@ public class ServerService {
         client.setRole(role);
         client.setFree(isFree);
         client.setSession(session);
+        // для агента переменная LinkedList<Message> queuedMessages не используется, объект можно не создавать
         client.setQueuedMessages(new LinkedList<>());
         return client;
     }
@@ -102,6 +103,8 @@ public class ServerService {
                 if (client.getConnectedSession() != null) {
                     sendMessage(message, users.get(client.getConnectedSession().getId()));
                 } else if (client.getRole() == Role.CLIENT) {
+                    // Предполагаю, что в данном случае синхронизация будет происходить по объекту, но переменная users принадлежит еще и классу 
+                    // WebServerEndpoint и объявлена как static, соответсвенно доступ к данной переменной можно получить не только через объект, но и класс
                     synchronized (users) {
                         if (connectFreeAgentToClient(users, client, message))
                             sendMessage(message, users.get(client.getConnectedSession().getId()));
@@ -129,6 +132,8 @@ public class ServerService {
             Client connectedClient = users.get(client.getConnectedSession().getId());
             message = new Message("SERVER", String.format("%s завершил диалог.", client.getName()), getTimeStamp());
             sendMessage(message, connectedClient);
+            // В ходе выполнения программы, после закрытия соединения посредством команды /exit, освободившийся агент не связывается с клиентами, 
+            // от которых пропущены сообщения. С даным агентом может связаться любой вновь подключившийся клиент.
 
             ServerLogger.logInfo(String.format("Пользователь \"%s\" отсоединился от пользователя \"%s\"",
                     client.getName(),
@@ -141,8 +146,11 @@ public class ServerService {
 
         users.remove(session.getId());
 
+        // Если отработает метод checkStoredMessagesAndConnectIfAgent(), который вычитывает пропущенные сообщения и удаляет из usersQueue клиента, 
+        // метод indexOf может вернуть -1
         int fromIndex = usersQueue.indexOf(session.getId());
         usersQueue.remove(session.getId());
+        // Может Возникнуть InvocationTargetException, если в метод передать: -1
         notifyQueuedUsersFromIndex(fromIndex);
 
         ServerLogger.logInfo(String.format("Пользователь \"%s\" отсоединился от чата", client.getName()));
@@ -194,8 +202,10 @@ public class ServerService {
         clientUser.getSession().getBasicRemote().sendObject(message);
     }
 
+    // Необходимо уточнить, имеет ли смысл синхронизация метода, если для каждой сессии (потока) создается свой объект класса ServerService
     public synchronized void checkStoredMessagesAndConnectIfAgent(final Client agent) throws IOException, EncodeException {
         if (agent.getRole() == Role.AGENT) {
+            // usersQueue относится не только к объекту, но и классу WebServerEndpoint, соответственно на нее могут быть ссылки из разных объектов класса ServerService
             if (!usersQueue.isEmpty()) {
                 Client client = users.get(usersQueue.getFirst());
                 usersQueue.removeFirst();
