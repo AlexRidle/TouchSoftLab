@@ -23,6 +23,7 @@ public class ConsoleService {
         String input;
         String[] splittedInput;
         try {
+            // Такая форма регистрации не совсем очевидна, со стороны пользователя было бы удобнее вводить его имя и выбирать роль
             System.out.println("Введите команду /register и свою роль с именем через пробел: ");
             input = systemIn.readLine();
             splittedInput = input.split(" ");
@@ -49,10 +50,13 @@ public class ConsoleService {
         Properties properties = ApplicationProperties.getProperties();
 
         //default settings
+        // Данные переменные можно было здесь не инициализировать, а использовать другой перегруженный конструктор метода getProperty, 
+        // в который также передается значение по умолчанию
         String HOST = "localhost";
         int PORT = 8080;
 
         try {
+            // Здесь можно было бы использовать ранее созданную переменную properties для вызова метода getProperty()
             HOST = ApplicationProperties.getProperties().getProperty("HOST");
         } catch (RuntimeException e) {
             System.out.println("Произошла ошибка при настройке адреса сервера. " +
@@ -111,6 +115,7 @@ public class ConsoleService {
         return String.format("[%s]", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
     }
 
+    // Название метода больше подходит для класса, который реализует интерфейс Runnable
     public void run(){
         WebSocketClient client = clientRegister();
         System.out.println("Для отправки сообщения введите текст");
