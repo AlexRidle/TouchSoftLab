@@ -25,7 +25,7 @@ public class ChatRoomConverter implements EntityConverter<ChatRoomDto, ChatRoom>
     @Override
     public ChatRoom convertToEntity(final ChatRoomDto dto) {
         final ChatRoom entity = new ChatRoom();
-        BeanUtils.copyProperties(entity, dto, "clientId","agentId");
+        BeanUtils.copyProperties(entity, dto, "clientId", "agentId");
         entity.setAgent(WebServerEndpoint.getUsers().get(dto.getAgentId()));
         entity.setClient(WebServerEndpoint.getUsers().get(dto.getClientId()));
         return entity;

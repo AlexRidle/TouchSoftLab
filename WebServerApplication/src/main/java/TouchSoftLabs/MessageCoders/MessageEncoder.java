@@ -11,7 +11,7 @@ public class MessageEncoder implements Encoder.Text<Message> {
     private static Gson gson = new Gson();
 
     @Override
-    public String encode(Message message){
+    public String encode(Message message) {
         return gson.toJson(message);
     }
 

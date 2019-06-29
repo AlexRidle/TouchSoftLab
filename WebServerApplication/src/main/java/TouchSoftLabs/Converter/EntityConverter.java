@@ -9,10 +9,10 @@ public interface EntityConverter<T, B> {
 
     B convertToEntity(final T dto);
 
-    default Set<T> convertToDto(final Set<B> entitySet){
-        if (entitySet != null){
+    default Set<T> convertToDto(final Set<B> entitySet) {
+        if (entitySet != null) {
             final Set<T> dtoSet = new HashSet<>();
-            for (final B entity : entitySet){
+            for (final B entity : entitySet) {
                 final T dto = convertToDto(entity);
                 dtoSet.add(dto);
             }
@@ -21,10 +21,10 @@ public interface EntityConverter<T, B> {
         return null;
     }
 
-    default Set<B> convertToEntity(final Set<T> dtoSet){
-        if (dtoSet != null){
+    default Set<B> convertToEntity(final Set<T> dtoSet) {
+        if (dtoSet != null) {
             final Set<B> entitySet = new HashSet<>();
-            for (final T dto : dtoSet){
+            for (final T dto : dtoSet) {
                 final B entity = convertToEntity(dto);
                 entitySet.add(entity);
             }

@@ -66,7 +66,7 @@ public class WebServerEndpoint {
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        if(!throwable.getMessage().equals("Программа на вашем хост-компьютере разорвала установленное подключение")){
+        if (!throwable.getMessage().equals("Программа на вашем хост-компьютере разорвала установленное подключение")) {
             ServerLogger.logError(String.format("Произошла ошибка.\r\n %s",
                     ApplicationUtils.convertThrowableToString(throwable)
             ));

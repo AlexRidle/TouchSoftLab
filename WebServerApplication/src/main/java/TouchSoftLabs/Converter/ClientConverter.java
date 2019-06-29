@@ -14,7 +14,7 @@ public class ClientConverter implements EntityConverter<ClientDto, Client> {
     @Override
     public ClientDto convertToDto(final Client entity) {
         final ClientDto dto = new ClientDto();
-        BeanUtils.copyProperties(entity, dto, "session","connectedSession","queuedMessages","chatRoom");
+        BeanUtils.copyProperties(entity, dto, "session", "connectedSession", "queuedMessages", "chatRoom");
         dto.setId(entity.getSession().getId());
         dto.setConnectedId(
                 entity.getConnectedSession() != null ?
@@ -32,7 +32,7 @@ public class ClientConverter implements EntityConverter<ClientDto, Client> {
     @Override
     public Client convertToEntity(final ClientDto dto) {
         final Client entity = new Client();
-        BeanUtils.copyProperties(entity, dto, "id","connectedId","chatRoomId");
+        BeanUtils.copyProperties(entity, dto, "id", "connectedId", "chatRoomId");
         entity.setSession(WebServerEndpoint.getUsers().get(dto.getId()).getSession());
         entity.setConnectedSession(WebServerEndpoint.getUsers().get(dto.getConnectedId()).getConnectedSession());
         entity.setQueuedMessages(new LinkedList<>());

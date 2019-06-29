@@ -91,7 +91,7 @@ public class ChatRestController {
     public ClientDto getAgentDetails(@RequestParam(name = "id") String id) {
         Client agent = users.get(id);
         ClientDto dto = null;
-        if(agent != null && agent.getRole() == Role.AGENT){
+        if (agent != null && agent.getRole() == Role.AGENT) {
             dto = clientConverter.convertToDto(agent);
         }
         return dto;
@@ -101,7 +101,7 @@ public class ChatRestController {
     public ClientDto getClientDetails(@RequestParam(name = "id") String id) {
         Client client = users.get(id);
         ClientDto dto = null;
-        if(client != null && client.getRole() == Role.CLIENT){
+        if (client != null && client.getRole() == Role.CLIENT) {
             dto = clientConverter.convertToDto(client);
         }
         return dto;
@@ -116,8 +116,8 @@ public class ChatRestController {
             client = users.get(usersQueue.get(index));
             JSONObject jsonClient = new JSONObject();
             jsonClient.put("queuePosition", index + 1);
-            jsonClient.put("id",client.getSession().getId());
-            jsonClient.put("name",client.getName());
+            jsonClient.put("id", client.getSession().getId());
+            jsonClient.put("name", client.getName());
             jsonArray.put(jsonClient);
         }
         jsonObject.put("queuedClients", jsonArray);
@@ -125,12 +125,12 @@ public class ChatRestController {
     }
 
     @GetMapping("/chatRooms")
-    public String getChatRooms(@RequestParam(name = "closed",required = false) String closed) {
+    public String getChatRooms(@RequestParam(name = "closed", required = false) String closed) {
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (ChatRoom chatRoom : chatRooms.values()) {
             if ((chatRoom.isOpened() && closed == null) ||
-                            (!chatRoom.isOpened() && closed != null)) {
+                    (!chatRoom.isOpened() && closed != null)) {
                 JSONObject jsonChatRoom = new JSONObject();
                 jsonChatRoom.put("id", chatRoom.getId());
                 jsonChatRoom.put("agent", chatRoom.getAgent().getName());
@@ -146,7 +146,7 @@ public class ChatRestController {
     public ChatRoomDto getChatRoomDetails(@RequestParam(name = "id") int id) {
         ChatRoom chatRoom = chatRooms.get(id);
         ChatRoomDto chatRoomDto = null;
-        if(chatRoom != null){
+        if (chatRoom != null) {
             chatRoomDto = chatRoomConverter.convertToDto(chatRoom);
         }
         return chatRoomDto;

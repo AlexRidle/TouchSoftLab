@@ -1,6 +1,6 @@
 package TouchSoftLabs.Service;
 
-import Client.WebConsoleClient;
+import TouchSoftLabs.Client.WebConsoleClient;
 import TouchSoftLabs.Enumeration.Role;
 import org.java_websocket.client.WebSocketClient;
 import org.json.JSONObject;
@@ -48,27 +48,26 @@ public class ConsoleService {
     private URI getClientURI(String role, String name) throws URISyntaxException {
         Properties properties = ApplicationProperties.getProperties();
 
-        //default settings
         String HOST = "localhost";
         int PORT = 8080;
 
         try {
-            HOST = ApplicationProperties.getProperties().getProperty("HOST");
-        } catch (RuntimeException e) {
+            HOST = ApplicationProperties.getProperties().getProperty("HOST", "localhost");
+        } catch (Exception e) {
             System.out.println("Произошла ошибка при настройке адреса сервера. " +
-                    "Проверьте значение адреса в файле конфигурации приложения");
-            System.exit(0);
+                    "Проверьте значение адреса в файле конфигурации приложения.");
+            System.out.println("В качестве хоста используется значение по умолчанию: " + HOST);
         }
 
         try {
             PORT = Integer.valueOf(properties.getProperty("PORT"));
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             System.out.println("Произошла ошибка при настройке порта сервера. " +
                     "Проверьте значение порта в файле конфигурации приложения");
-            System.exit(0);
+            System.out.println("В качестве порта используется значение по умолчанию: " + PORT);
         }
 
-        return new URI(String.format("ws://%s:%s/%s/%s/",HOST, PORT, role, name));
+        return new URI(String.format("ws://%s:%s/%s/%s/", HOST, PORT, role, name));
     }
 
     private boolean isInputCorrect(String[] splittedInput) {
@@ -85,9 +84,9 @@ public class ConsoleService {
         String message;
         while (true) {
             try {
-                while(true){
+                while (true) {
                     message = systemIn.readLine().trim();
-                    if(!message.equals("")){
+                    if (!message.equals("")) {
                         break;
                     }
                     System.out.println("Сообщение не может быть пустым!");
@@ -111,7 +110,7 @@ public class ConsoleService {
         return String.format("[%s]", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
     }
 
-    public void run(){
+    public void run() {
         WebSocketClient client = clientRegister();
         System.out.println("Для отправки сообщения введите текст");
         sendMessage(client);

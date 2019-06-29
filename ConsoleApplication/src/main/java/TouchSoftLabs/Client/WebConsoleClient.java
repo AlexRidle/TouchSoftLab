@@ -1,4 +1,4 @@
-package Client;
+package TouchSoftLabs.Client;
 
 import TouchSoftLabs.Utils.ApplicationUtils;
 import org.java_websocket.client.WebSocketClient;
@@ -21,7 +21,7 @@ public class WebConsoleClient extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        if(reason.equalsIgnoreCase("")){
+        if (reason.equalsIgnoreCase("")) {
             reason = "Соединение разорвано по запросу пользователя";
         }
         System.out.println(String.format("Соединение закрыто. Причина: \"%s\".", reason));

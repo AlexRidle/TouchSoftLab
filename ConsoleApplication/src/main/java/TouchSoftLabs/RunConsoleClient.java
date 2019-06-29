@@ -1,3 +1,5 @@
+package TouchSoftLabs;
+
 import TouchSoftLabs.Service.ConsoleService;
 
 public class RunConsoleClient {
