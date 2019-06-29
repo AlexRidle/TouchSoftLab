@@ -1,4 +1,4 @@
-import Service.ConsoleService;
+import TouchSoftLabs.Service.ConsoleService;
 
 public class RunConsoleClient {
 

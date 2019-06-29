@@ -1,6 +1,6 @@
 package Client;
 
-import Utils.ApplicationUtils;
+import TouchSoftLabs.Utils.ApplicationUtils;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONObject;
