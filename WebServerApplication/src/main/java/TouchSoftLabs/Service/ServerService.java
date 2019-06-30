@@ -5,7 +5,7 @@ import TouchSoftLabs.Entity.Client;
 import TouchSoftLabs.Entity.Message;
 import TouchSoftLabs.Enumeration.MessageType;
 import TouchSoftLabs.Enumeration.Role;
-import TouchSoftLabs.Server.WebServerEndpoint;
+import TouchSoftLabs.WebSocket.WebServerEndpoint;
 
 import javax.websocket.EncodeException;
 import javax.websocket.Session;
@@ -160,7 +160,7 @@ public class ServerService {
         ServerLogger.logInfo(String.format("Пользователь \"%s\" отсоединился от чата", client.getName()));
     }
 
-    static private synchronized void disconnectUser(Client client) throws IOException, EncodeException {
+    static public synchronized boolean disconnectUser(Client client) throws IOException, EncodeException {
         Message message;
 
         if (client.getChatRoom() != null) {
@@ -196,14 +196,17 @@ public class ServerService {
                 client.setConnectedSession(null);
                 client.setFree(true);
             }
+            return true;
         } else if (usersQueue.contains(client.getSession().getId())) {
             int fromIndex = usersQueue.indexOf(client.getSession().getId());
             usersQueue.remove(client.getSession().getId());
             client.getQueuedMessages().clear();
             notifyQueuedUsersFromIndex(fromIndex);
             sendMessage(new Message("SERVER", "Вы покинули очередь. История ваших сообщений очищена.", getTimeStamp()), client);
+            return true;
         } else {
             sendMessage(new Message("SERVER", "Команда не выполнена. Вы не подключены к собеседнику.", getTimeStamp()), client);
+            return false;
         }
     }
 

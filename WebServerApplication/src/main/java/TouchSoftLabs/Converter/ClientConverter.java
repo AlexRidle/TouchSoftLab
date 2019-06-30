@@ -2,7 +2,7 @@ package TouchSoftLabs.Converter;
 
 import TouchSoftLabs.Dto.ClientDto;
 import TouchSoftLabs.Entity.Client;
-import TouchSoftLabs.Server.WebServerEndpoint;
+import TouchSoftLabs.WebSocket.WebServerEndpoint;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

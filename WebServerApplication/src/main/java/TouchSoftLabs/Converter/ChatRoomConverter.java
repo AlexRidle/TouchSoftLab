@@ -1,14 +1,10 @@
 package TouchSoftLabs.Converter;
 
 import TouchSoftLabs.Dto.ChatRoomDto;
-import TouchSoftLabs.Dto.ClientDto;
 import TouchSoftLabs.Entity.ChatRoom;
-import TouchSoftLabs.Entity.Client;
-import TouchSoftLabs.Server.WebServerEndpoint;
+import TouchSoftLabs.WebSocket.WebServerEndpoint;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
-import java.util.LinkedList;
 
 @Service
 public class ChatRoomConverter implements EntityConverter<ChatRoomDto, ChatRoom> {
