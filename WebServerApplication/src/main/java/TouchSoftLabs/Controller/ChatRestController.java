@@ -1,7 +1,5 @@
 package TouchSoftLabs.Controller;
 
-import TouchSoftLabs.Service.HttpService;
-import TouchSoftLabs.WebSocket.WebHttpClient;
 import TouchSoftLabs.Converter.ChatRoomConverter;
 import TouchSoftLabs.Converter.ClientConverter;
 import TouchSoftLabs.Dto.ChatRoomDto;
@@ -9,6 +7,8 @@ import TouchSoftLabs.Dto.ClientDto;
 import TouchSoftLabs.Entity.ChatRoom;
 import TouchSoftLabs.Entity.Client;
 import TouchSoftLabs.Enumeration.Role;
+import TouchSoftLabs.Service.HttpService;
+import TouchSoftLabs.WebSocket.WebHttpClient;
 import TouchSoftLabs.WebSocket.WebServerEndpoint;
 import org.java_websocket.client.WebSocketClient;
 import org.json.JSONArray;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.websocket.EncodeException;
-import javax.websocket.Session;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,6 +34,7 @@ public class ChatRestController {
     private final ClientConverter clientConverter;
     private final ChatRoomConverter chatRoomConverter;
     private final HttpService httpService;
+
     private static final HashMap<String, Client> users = WebServerEndpoint.getUsers();
     private static final LinkedList<String> usersQueue = WebServerEndpoint.getUsersQueue();
     private static final HashMap<Integer, ChatRoom> chatRooms = WebServerEndpoint.getChatRooms();
@@ -232,5 +232,16 @@ public class ChatRestController {
             return "Successfully disconnected user with id " + userId;
         }
         return "Can not disconnect user with id " + userId;
+    }
+
+    @PostMapping("/closeConnectionOfUser")
+    public String closeConnectionOfUser(
+            @RequestParam(value = "userId") String userId) throws IOException{
+        Client client = users.get(userId);
+        if (client != null) {
+            client.getSession().close();
+            return "Successfully closed connection with user id " + userId;
+        }
+        return "Can not close connection with user id " + userId;
     }
 }
