@@ -6,8 +6,8 @@ import TouchSoftLabs.Entity.Message;
 import TouchSoftLabs.MessageCoders.MessageDecoder;
 import TouchSoftLabs.MessageCoders.MessageEncoder;
 import TouchSoftLabs.Service.ServerLogger;
-import TouchSoftLabs.Utils.ApplicationUtils;
 import TouchSoftLabs.Service.ServerService;
+import TouchSoftLabs.Utils.ApplicationUtils;
 import lombok.Getter;
 
 import javax.websocket.EncodeException;
@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import static TouchSoftLabs.Utils.ChatUtils.getTimeStamp;
-
 @ServerEndpoint(value = "/{userrole}/{username}", decoders = MessageDecoder.class, encoders = MessageEncoder.class)
 public class WebServerEndpoint {
 
@@ -37,20 +35,9 @@ public class WebServerEndpoint {
     @OnOpen
     public void onOpen(Session session, @PathParam("username") String username, @PathParam("userrole") String userrole) throws IOException, EncodeException {
         Client client = ServerService.registerClient(username, userrole, session);
-
-        Message message = new Message();
-        message.setFrom("SERVER");
-        message.setTimestamp(getTimeStamp());
-        message.setContent(String.format("Вы подключились к чату под логином \"%s\"", username));
-
-        ServerService.sendMessage(message, client);
-        if (client.getChatRoom() != null) {
-            ServerService.closeChatRoom(client.getChatRoom());
-        }
-
-        ServerService.checkStoredMessagesAndConnectIfAgent(client);
-
+        ServerService.sendMessageFromServerToUser(String.format("Вы подключились к чату под логином \"%s\"", username), client);
         ServerLogger.logInfo(String.format("Пользователь \"%s\" подключился к чату", username));
+        ServerService.checkStoredMessagesAndConnectIfAgent(client);
     }
 
     @OnMessage

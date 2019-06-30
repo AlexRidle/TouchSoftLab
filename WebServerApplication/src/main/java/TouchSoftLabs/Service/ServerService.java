@@ -125,15 +125,15 @@ public class ServerService {
 
     static public synchronized void closeConnection(Session session) throws IOException, EncodeException {
         Client client = users.get(session.getId());
-        Message message;
 
         if (client.getChatRoom() != null) {
+            writeServerMessageInChatRoomMessageList(String.format("Пользователь \"%s\" завершил диалог.", client.getName()), client.getChatRoom());
             closeChatRoom(client.getChatRoom());
         }
 
         if (client.getConnectedSession() != null) {
             Client connectedClient = users.get(client.getConnectedSession().getId());
-            sendMessageFromServerToUser(String.format("%s завершил диалог.", client.getName()),connectedClient);
+            sendMessageFromServerToUser(String.format("%s завершил диалог.", client.getName()), connectedClient);
 
             ServerLogger.logInfo(String.format("Пользователь \"%s\" отсоединился от пользователя \"%s\"",
                     client.getName(),
@@ -155,12 +155,6 @@ public class ServerService {
     }
 
     static public synchronized boolean disconnectUser(Client client) throws IOException, EncodeException {
-        Message message;
-
-        if (client.getChatRoom() != null) {
-            closeChatRoom(client.getChatRoom());
-        }
-
         if (client.getConnectedSession() != null) {
             Client connectedClient = users.get(client.getConnectedSession().getId());
 
@@ -168,6 +162,8 @@ public class ServerService {
             sendMessageFromServerToUser(String.format("%s вышел из диалога.", client.getName()), connectedClient);
 
             ServerLogger.logInfo(String.format("Пользователь \"%s\" отсоединился от пользователя \"%s\"", client.getName(), connectedClient.getName()));
+            writeServerMessageInChatRoomMessageList(String.format("Пользователь \"%s\" завершил диалог.", client.getName()), client.getChatRoom());
+            closeChatRoom(client.getChatRoom());
 
             connectedClient.setConnectedSession(null);
             if (client.getRole() == Role.AGENT) {
@@ -187,6 +183,7 @@ public class ServerService {
                 client.setConnectedSession(null);
                 client.setFree(true);
             }
+
             return true;
         } else if (usersQueue.contains(client.getSession().getId())) {
             int fromIndex = usersQueue.indexOf(client.getSession().getId());
@@ -201,7 +198,7 @@ public class ServerService {
         }
     }
 
-    static public void sendMessage(Message message, Client clientUser) throws IOException, EncodeException {
+    private static void sendMessage(Message message, Client clientUser) throws IOException, EncodeException {
         clientUser.getSession().getBasicRemote().sendObject(message);
     }
 
@@ -225,9 +222,9 @@ public class ServerService {
                 client.getQueuedMessages().clear();
 
                 if (usersQueue.size() > 0) {
-                    sendMessageFromServerToUser(String.format("Количество пользователей ожидающих ответа: %s", usersQueue.size()),agent);
+                    sendMessageFromServerToUser(String.format("Количество пользователей ожидающих ответа: %s", usersQueue.size()), agent);
                 }
-                sendMessageFromServerToUser( String.format("Вы были подключены к агенту %s. Ваши ранее написанные сообщения были отправлены.", agent.getName()), client);
+                sendMessageFromServerToUser(String.format("Вы были подключены к агенту %s. Ваши ранее написанные сообщения были отправлены.", agent.getName()), client);
 
                 notifyQueuedUsersFromIndex(0);
                 ServerLogger.logInfo(String.format("Пользователь \"%s\" соединился с агентом \"%s\"", client.getName(), agent.getName()));
@@ -259,18 +256,27 @@ public class ServerService {
         chatRooms.put(chatRoomIdCounter, chatRoom);
         agent.setChatRoom(chatRoom);
         client.setChatRoom(chatRoom);
+        writeServerMessageInChatRoomMessageList(String.format("Пользователь \"%s\" соединился с агентом \"%s\"", client.getName(), agent.getName()), chatRoom);
         chatRoomIdCounter++;
     }
 
-    public static synchronized void closeChatRoom(ChatRoom chatRoom) {
+    private static synchronized void closeChatRoom(ChatRoom chatRoom) {
         chatRoom.setChatRoomClosed(getTimeStamp());
         chatRoom.getClient().setChatRoom(null);
         chatRoom.getAgent().setChatRoom(null);
         chatRoom.setOpened(false);
     }
 
-    private static synchronized void sendMessageFromServerToUser(String serverMessage, Client userTo) throws IOException, EncodeException {
+    public static synchronized void sendMessageFromServerToUser(String serverMessage, Client userTo) throws IOException, EncodeException {
         Message message = new Message("SERVER", serverMessage, getTimeStamp());
         sendMessage(message, userTo);
+    }
+
+    private static synchronized void writeServerMessageInChatRoomMessageList(String serverMessage, ChatRoom chatRoom) {
+        if (chatRoom.getMessageList() == null) {
+            chatRoom.setMessageList(new LinkedList<>());
+        }
+        Message message = new Message("SERVER", serverMessage, getTimeStamp());
+        chatRoom.getMessageList().add(message);
     }
 }

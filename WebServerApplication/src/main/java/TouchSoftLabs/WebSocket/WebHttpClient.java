@@ -2,7 +2,6 @@ package TouchSoftLabs.WebSocket;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-import org.json.JSONObject;
 
 import java.net.URI;
 
