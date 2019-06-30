@@ -59,11 +59,8 @@ public class ServerService {
         } else {
             agent.setConnectedSession(client.getSession());
             client.setFree(false);
-            message = new Message("SERVER", String.format("Вы были подключены к агенту %s", agent.getName()), getTimeStamp());
-            sendMessage(message, client);
-
-            message = new Message("SERVER", String.format("К вам подключился пользователь %s", client.getName()), getTimeStamp());
-            sendMessage(message, agent);
+            sendMessageFromServerToUser(String.format("Вы были подключены к агенту %s", agent.getName()), client);
+            sendMessageFromServerToUser(String.format("К вам подключился пользователь %s", client.getName()), agent);
             ServerLogger.logInfo(String.format("Пользователь \"%s\" соединился с агентом \"%s\"", client.getName(), agent.getName()));
 
             createChatRoom(client, agent);
@@ -73,14 +70,15 @@ public class ServerService {
 
     static private synchronized void storeMessage(final Client client, final Message message) throws IOException, EncodeException {
         if (!usersQueue.contains(client.getSession().getId())) {
-            sendMessage(new Message("SERVER",
-                    "На данный момент все агенты заняты. На ваше сообщение ответит первый освободившийся агент",
-                    getTimeStamp()), client);
+            sendMessageFromServerToUser("На данный момент все агенты заняты. На ваше сообщение ответит первый освободившийся агент", client);
             usersQueue.add(client.getSession().getId());
         }
-        sendMessage(new Message("SERVER",
+
+        sendMessageFromServerToUser(
                 "Сообщение записано. Ваша позиция в очереди: " + (usersQueue.indexOf(client.getSession().getId()) + 1),
-                getTimeStamp()), client);
+                client
+        );
+
         client.getQueuedMessages().add(message);
     }
 
@@ -114,10 +112,7 @@ public class ServerService {
                             sendMessage(message, users.get(client.getConnectedSession().getId()));
                     }
                 } else {
-                    message.setFrom("SERVER");
-                    message.setContent("Собеседник отсутствует.");
-                    message.setTimestamp(getTimeStamp());
-                    sendMessage(message, client);
+                    sendMessageFromServerToUser("Собеседник отсутствует.", client);
                 }
 
                 break;
@@ -138,8 +133,7 @@ public class ServerService {
 
         if (client.getConnectedSession() != null) {
             Client connectedClient = users.get(client.getConnectedSession().getId());
-            message = new Message("SERVER", String.format("%s завершил диалог.", client.getName()), getTimeStamp());
-            sendMessage(message, connectedClient);
+            sendMessageFromServerToUser(String.format("%s завершил диалог.", client.getName()),connectedClient);
 
             ServerLogger.logInfo(String.format("Пользователь \"%s\" отсоединился от пользователя \"%s\"",
                     client.getName(),
@@ -170,11 +164,8 @@ public class ServerService {
         if (client.getConnectedSession() != null) {
             Client connectedClient = users.get(client.getConnectedSession().getId());
 
-            message = new Message("SERVER", "Вы вышли из диалога", getTimeStamp());
-            sendMessage(message, client);
-
-            message = new Message("SERVER", String.format("%s вышел из диалога.", client.getName()), getTimeStamp());
-            sendMessage(message, connectedClient);
+            sendMessageFromServerToUser("Вы вышли из диалога", client);
+            sendMessageFromServerToUser(String.format("%s вышел из диалога.", client.getName()), connectedClient);
 
             ServerLogger.logInfo(String.format("Пользователь \"%s\" отсоединился от пользователя \"%s\"", client.getName(), connectedClient.getName()));
 
@@ -202,10 +193,10 @@ public class ServerService {
             usersQueue.remove(client.getSession().getId());
             client.getQueuedMessages().clear();
             notifyQueuedUsersFromIndex(fromIndex);
-            sendMessage(new Message("SERVER", "Вы покинули очередь. История ваших сообщений очищена.", getTimeStamp()), client);
+            sendMessageFromServerToUser("Вы покинули очередь. История ваших сообщений очищена.", client);
             return true;
         } else {
-            sendMessage(new Message("SERVER", "Команда не выполнена. Вы не подключены к собеседнику.", getTimeStamp()), client);
+            sendMessageFromServerToUser("Команда не выполнена. Вы не подключены к собеседнику.", client);
             return false;
         }
     }
@@ -226,9 +217,7 @@ public class ServerService {
 
                 createChatRoom(client, agent);
 
-                sendMessage(new Message("SERVER",
-                        String.format("К вам подключился пользователь %s. Пропущенные сообщения:", client.getName()),
-                        getTimeStamp()), agent);
+                sendMessageFromServerToUser(String.format("К вам подключился пользователь %s. Пропущенные сообщения:", client.getName()), agent);
                 for (Message message : client.getQueuedMessages()) {
                     sendMessage(message, agent);
                     client.getChatRoom().getMessageList().add(message);
@@ -236,15 +225,9 @@ public class ServerService {
                 client.getQueuedMessages().clear();
 
                 if (usersQueue.size() > 0) {
-                    sendMessage(new Message("SERVER",
-                            String.format("Количество пользователей ожидающих ответа: %s", usersQueue.size()),
-                            getTimeStamp()), agent
-                    );
+                    sendMessageFromServerToUser(String.format("Количество пользователей ожидающих ответа: %s", usersQueue.size()),agent);
                 }
-                sendMessage(new Message("SERVER",
-                        String.format("Вы были подключены к агенту %s. Ваши ранее написанные сообщения были отправлены.", agent.getName()),
-                        getTimeStamp()), client
-                );
+                sendMessageFromServerToUser( String.format("Вы были подключены к агенту %s. Ваши ранее написанные сообщения были отправлены.", agent.getName()), client);
 
                 notifyQueuedUsersFromIndex(0);
                 ServerLogger.logInfo(String.format("Пользователь \"%s\" соединился с агентом \"%s\"", client.getName(), agent.getName()));
@@ -259,9 +242,7 @@ public class ServerService {
         Client client;
         for (int index = fromIndex; index < usersQueue.size() && index != -1; index++) {
             client = users.get(usersQueue.get(index));
-            sendMessage(new Message("SERVER",
-                    "Ваша позиция в очереди: " + (index + 1),
-                    getTimeStamp()), client);
+            sendMessageFromServerToUser("Ваша позиция в очереди: " + (index + 1), client);
         }
     }
 
@@ -286,5 +267,10 @@ public class ServerService {
         chatRoom.getClient().setChatRoom(null);
         chatRoom.getAgent().setChatRoom(null);
         chatRoom.setOpened(false);
+    }
+
+    private static synchronized void sendMessageFromServerToUser(String serverMessage, Client userTo) throws IOException, EncodeException {
+        Message message = new Message("SERVER", serverMessage, getTimeStamp());
+        sendMessage(message, userTo);
     }
 }
