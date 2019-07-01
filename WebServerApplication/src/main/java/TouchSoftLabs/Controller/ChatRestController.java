@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.websocket.EncodeException;
 import java.io.IOException;
 import java.net.URI;
@@ -46,11 +47,6 @@ public class ChatRestController {
         this.httpService = httpService;
     }
 
-    @GetMapping("/info")
-    public String getInfo() {
-        return "TouchSoftLab Task 4.";
-    }
-
     @GetMapping("/freeAgentsNum")
     public String getFreeAgentsNum() {
         JSONObject jsonObject = new JSONObject();
@@ -60,7 +56,7 @@ public class ChatRestController {
                 counter++;
             }
         }
-        jsonObject.put("freeAgents", counter);
+        jsonObject.put("freeAgentsNum", counter);
         return jsonObject.toString();
     }
 
@@ -113,21 +109,25 @@ public class ChatRestController {
     }
 
     @GetMapping("/agentDetails")
-    public ClientDto getAgentDetails(@RequestParam(name = "id") String id) {
+    public ClientDto getAgentDetails(@RequestParam(name = "id") String id, HttpServletResponse response) {
         Client agent = users.get(id);
         ClientDto dto = null;
         if (agent != null && agent.getRole() == Role.AGENT) {
             dto = clientConverter.convertToDto(agent);
+        } else {
+            response.setStatus(204);
         }
         return dto;
     }
 
     @GetMapping("/clientDetails")
-    public ClientDto getClientDetails(@RequestParam(name = "id") String id) {
+    public ClientDto getClientDetails(@RequestParam(name = "id") String id, HttpServletResponse response) {
         Client client = users.get(id);
         ClientDto dto = null;
         if (client != null && client.getRole() == Role.CLIENT) {
             dto = clientConverter.convertToDto(client);
+        } else {
+            response.setStatus(204);
         }
         return dto;
     }
@@ -168,81 +168,101 @@ public class ChatRestController {
     }
 
     @GetMapping("/chatRoomDetails")
-    public ChatRoomDto getChatRoomDetails(@RequestParam(name = "id") int id) {
+    public ChatRoomDto getChatRoomDetails(@RequestParam(name = "id") int id, HttpServletResponse response) {
         ChatRoom chatRoom = chatRooms.get(id);
         ChatRoomDto chatRoomDto = null;
         if (chatRoom != null) {
             chatRoomDto = chatRoomConverter.convertToDto(chatRoom);
+        } else {
+            response.setStatus(204);
         }
         return chatRoomDto;
     }
 
     @PostMapping("/registerClient")
     public String registerClient(@RequestParam(value = "name") String name) throws URISyntaxException {
+        JSONObject jsonObject = new JSONObject();
         WebSocketClient client = new WebHttpClient(new URI(String.format("ws://localhost:8080/%s/%s/", "client", name)));
         client.connect();
-        return "Successfully registered CLIENT with name " + name;
+        jsonObject.put("response", "Successfully registered CLIENT with name " + name);
+        return jsonObject.toString();
     }
 
     @PostMapping("/registerAgent")
     public String registerAgent(@RequestParam(value = "name") String name) throws URISyntaxException {
+        JSONObject jsonObject = new JSONObject();
         WebSocketClient agent = new WebHttpClient(new URI(String.format("ws://localhost:8080/%s/%s/", "agent", name)));
         agent.connect();
-        return "Successfully registered AGENT with name " + name;
+        jsonObject.put("response", "Successfully registered AGENT with name " + name);
+        return jsonObject.toString();
     }
 
     @PostMapping("/sendMessageToClient")
     public String sendMessageToClient(
             @RequestParam(value = "message") String message,
             @RequestParam(value = "agentId") String agentId) throws IOException, EncodeException {
+        JSONObject jsonObject = new JSONObject();
         Client agent = users.get(agentId);
         if (agent != null && agent.getRole() == Role.AGENT) {
             httpService.sendMessage(users.get(agentId), message);
-            return "Message has been successfully sent";
+            jsonObject.put("response", "Message has been successfully sent");
+        } else {
+            jsonObject.put("response", "Message has not been sent");
         }
-        return "Message has not been sent";
+        return jsonObject.toString();
     }
 
     @PostMapping("/sendMessageToAgent")
     public String sendMessageToAgent(
             @RequestParam(value = "message") String message,
             @RequestParam(value = "clientId") String clientId) throws IOException, EncodeException {
+        JSONObject jsonObject = new JSONObject();
         Client client = users.get(clientId);
         if (client != null && client.getRole() == Role.CLIENT) {
             httpService.sendMessage(users.get(clientId), message);
-            return "Message has been successfully sent";
+            jsonObject.put("response", "Message has been successfully sent");
+        } else {
+            jsonObject.put("response", "Message has not been sent");
         }
-        return "Message has not been sent";
+        return jsonObject.toString();
     }
 
     @GetMapping("/receiveMessages")
     public String receiveMessages(
-            @RequestParam(value = "userId") String userId) {//использовать имя как уникальный идентификатор?
+            @RequestParam(value = "userId") String userId) throws InterruptedException {
+        JSONObject jsonObject = new JSONObject();
         WebHttpClient webHttpClient = WebHttpClient.getWebSocketClients().get(userId);
         if (webHttpClient != null) {
             return webHttpClient.convertListToStringAndClearNewMessages();
         }
-        return "Can not load new massages of user with id " + userId;
+        jsonObject.put("response", "Can not load new massages of user with id " + userId);
+        return jsonObject.toString();
     }
 
     @PostMapping("/leaveChatRoom")
     public String leaveChatRoom(
             @RequestParam(value = "userId") String userId) throws IOException, EncodeException {
+        JSONObject jsonObject = new JSONObject();
         Client client = users.get(userId);
         if (client != null && httpService.disconnect(client)) {
-            return "Successfully disconnected user with id " + userId;
+            jsonObject.put("response", "Successfully disconnected user with id " + userId);
+        } else {
+            jsonObject.put("response", "Can not disconnect user with id " + userId);
         }
-        return "Can not disconnect user with id " + userId;
+        return jsonObject.toString();
     }
 
     @PostMapping("/closeConnectionOfUser")
     public String closeConnectionOfUser(
             @RequestParam(value = "userId") String userId) throws IOException {
+        JSONObject jsonObject = new JSONObject();
         Client client = users.get(userId);
         if (client != null) {
             client.getSession().close();
-            return "Successfully closed connection with user id " + userId;
+            jsonObject.put("response", "Successfully closed connection with user id " + userId);
+        } else {
+            jsonObject.put("response", "Can not close connection with user id " + userId);
         }
-        return "Can not close connection with user id " + userId;
+        return jsonObject.toString();
     }
 }

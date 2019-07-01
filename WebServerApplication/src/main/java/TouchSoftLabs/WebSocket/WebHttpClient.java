@@ -55,19 +55,25 @@ public class WebHttpClient extends WebSocketClient {
 
         synchronized (newMessages){
             newMessages.add(message);
+            newMessages.notifyAll();
         }
     }
 
-    public synchronized String convertListToStringAndClearNewMessages() {
+    public synchronized String convertListToStringAndClearNewMessages() throws InterruptedException {
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
 
-        for (Message message: newMessages) {
-            jsonArray.put(messageEncoder.encode(message));
-        }
-
         synchronized (newMessages){
-            newMessages.clear();
+            if(newMessages.isEmpty()){
+                newMessages.wait(30000);
+            }
+
+            if(!newMessages.isEmpty()){
+                for (Message message: newMessages) {
+                    jsonArray.put(messageEncoder.encode(message));
+                }
+                newMessages.clear();
+            }
         }
 
         jsonObject.put("newMessages", jsonArray);
