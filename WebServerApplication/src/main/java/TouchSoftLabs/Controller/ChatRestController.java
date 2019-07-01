@@ -215,13 +215,14 @@ public class ChatRestController {
         return "Message has not been sent";
     }
 
-    @PostMapping("/receiveMessages")
+    @GetMapping("/receiveMessages")
     public String receiveMessages(
-            @RequestParam(value = "userId") String userId) {
-        //смотрим список новых сообщений
-        //отправляем все из них
-        //истим список новых сообщений
-        return "Currently unavailable";
+            @RequestParam(value = "userId") String userId) {//использовать имя как уникальный идентификатор?
+        WebHttpClient webHttpClient = WebHttpClient.getWebSocketClients().get(userId);
+        if (webHttpClient != null) {
+            return webHttpClient.convertListToStringAndClearNewMessages();
+        }
+        return "Can not load new massages of user with id " + userId;
     }
 
     @PostMapping("/leaveChatRoom")
@@ -236,7 +237,7 @@ public class ChatRestController {
 
     @PostMapping("/closeConnectionOfUser")
     public String closeConnectionOfUser(
-            @RequestParam(value = "userId") String userId) throws IOException{
+            @RequestParam(value = "userId") String userId) throws IOException {
         Client client = users.get(userId);
         if (client != null) {
             client.getSession().close();
