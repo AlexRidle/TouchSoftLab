@@ -46,13 +46,11 @@ public class WebHttpClient extends WebSocketClient {
 
     @Override
     public void onMessage(String rawMessage) {
-
-        //получить id при регистрации первым сообщением
-
         Message message = messageDecoder.decode(rawMessage);
 
-        if(message.getContent().startsWith("Ваш идентификатор сессии: ")){
+        if(message.getFrom().equals("SERVER") && message.getContent().startsWith("Ваш идентификатор сессии: ")){
             webSocketClients.put(message.getContent().replace("Ваш идентификатор сессии: ", ""), this);
+            return;
         }
 
         synchronized (newMessages){

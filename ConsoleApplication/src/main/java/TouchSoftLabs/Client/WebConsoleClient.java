@@ -7,7 +7,6 @@ import org.json.JSONObject;
 
 import java.net.URI;
 
-
 public class WebConsoleClient extends WebSocketClient {
 
     public WebConsoleClient(URI serverURI) {
@@ -39,6 +38,11 @@ public class WebConsoleClient extends WebSocketClient {
         String message = jsonMessage.getString("content");
         String sender = jsonMessage.getString("from");
         String timestamp = jsonMessage.getString("timestamp");
+
+        if(sender.equals("SERVER") && message.startsWith("Ваш идентификатор сессии: ")){
+            return;
+        }
+
         System.out.println(String.format("%s %s: %s", timestamp, sender, message));
     }
 }

@@ -93,6 +93,11 @@ function connectClient() {
         var timestamp = message.timestamp;
         var color;
         var name;
+
+        if(from === 'SERVER' && content.substring(0, 26) === "Ваш идентификатор сессии: "){
+            return
+        }
+
         if (from === userName) {
             name = userName + " (Вы)";
             color = userColor;

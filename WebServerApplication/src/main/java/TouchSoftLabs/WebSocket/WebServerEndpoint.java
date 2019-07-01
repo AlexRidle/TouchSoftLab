@@ -34,9 +34,6 @@ public class WebServerEndpoint {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("username") String username, @PathParam("userrole") String userrole) throws IOException, EncodeException {
-
-        //отправитье session.id первым сообщением
-
         Client client = ServerService.registerClient(username, userrole, session);
         ServerService.sendMessageFromServerToUser("Ваш идентификатор сессии: " + session.getId(), client);
         ServerService.sendMessageFromServerToUser(String.format("Вы подключились к чату под логином \"%s\"", username), client);
