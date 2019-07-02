@@ -25,6 +25,7 @@ import javax.websocket.EncodeException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -61,51 +62,66 @@ public class ChatRestController {
     }
 
     @GetMapping("/freeAgents")
-    public String getFreeAgents() {
+    public String getFreeAgents(@RequestParam(name = "pageNumber") int pageNumber, @RequestParam(name = "pageSize") int pageSize) {
         JSONArray jsonArray = new JSONArray();
-        JSONObject jsonObject = new JSONObject();
+        ArrayList<JSONObject> agents = new ArrayList<>();
+
         for (Client client : users.values()) {
             if (client.getRole() == Role.AGENT && client.isFree()) {
                 JSONObject jsonAgent = new JSONObject();
                 jsonAgent.put("id", client.getSession().getId());
                 jsonAgent.put("name", client.getName());
-                jsonArray.put(jsonAgent);
+                agents.add(jsonAgent);
             }
         }
-        jsonObject.put("freeAgents", jsonArray);
-        return jsonObject.toString();
+
+        for (int i = pageNumber * pageSize; i < pageNumber * pageSize + pageSize && i < agents.size(); i++) {
+            jsonArray.put(agents.get(i));
+        }
+
+        return jsonArray.toString();
     }
 
     @GetMapping("/registeredAgents")
-    public String getRegisteredAgents() {
+    public String getRegisteredAgents(@RequestParam(name = "pageNumber") int pageNumber, @RequestParam(name = "pageSize") int pageSize) {
         JSONArray jsonArray = new JSONArray();
-        JSONObject jsonObject = new JSONObject();
+        ArrayList<JSONObject> agents = new ArrayList<>();
+
         for (Client client : users.values()) {
             if (client.getRole() == Role.AGENT) {
                 JSONObject jsonAgent = new JSONObject();
                 jsonAgent.put("id", client.getSession().getId());
                 jsonAgent.put("name", client.getName());
-                jsonArray.put(jsonAgent);
+                agents.add(jsonAgent);
             }
         }
-        jsonObject.put("registeredAgents", jsonArray);
-        return jsonObject.toString();
+
+        for (int i = pageNumber * pageSize; i < pageNumber * pageSize + pageSize && i < agents.size(); i++) {
+            jsonArray.put(agents.get(i));
+        }
+
+        return jsonArray.toString();
     }
 
     @GetMapping("/registeredClients")
-    public String getRegisteredClients() {
+    public String getRegisteredClients(@RequestParam(name = "pageNumber") int pageNumber, @RequestParam(name = "pageSize") int pageSize) {
         JSONArray jsonArray = new JSONArray();
-        JSONObject jsonObject = new JSONObject();
+        ArrayList<JSONObject> clients = new ArrayList<>();
+
         for (Client client : users.values()) {
             if (client.getRole() == Role.CLIENT) {
                 JSONObject jsonClient = new JSONObject();
                 jsonClient.put("id", client.getSession().getId());
                 jsonClient.put("name", client.getName());
-                jsonArray.put(jsonClient);
+                clients.add(jsonClient);
             }
         }
-        jsonObject.put("registeredClients", jsonArray);
-        return jsonObject.toString();
+
+        for (int i = pageNumber * pageSize; i < pageNumber * pageSize + pageSize && i < clients.size(); i++) {
+            jsonArray.put(clients.get(i));
+        }
+
+        return jsonArray.toString();
     }
 
     @GetMapping("/agentDetails")
@@ -133,26 +149,32 @@ public class ChatRestController {
     }
 
     @GetMapping("/queuedClients")
-    public String getQueuedClients() {
+    public String getQueuedClients(@RequestParam(name = "pageNumber") int pageNumber, @RequestParam(name = "pageSize") int pageSize) {
         JSONArray jsonArray = new JSONArray();
-        JSONObject jsonObject = new JSONObject();
+        ArrayList<JSONObject> queuedClients = new ArrayList<>();
         Client client;
+
         for (int index = 0; index < usersQueue.size(); index++) {
             client = users.get(usersQueue.get(index));
             JSONObject jsonClient = new JSONObject();
             jsonClient.put("queuePosition", index + 1);
             jsonClient.put("id", client.getSession().getId());
             jsonClient.put("name", client.getName());
-            jsonArray.put(jsonClient);
+            queuedClients.add(jsonClient);
         }
-        jsonObject.put("queuedClients", jsonArray);
-        return jsonObject.toString();
+
+        for (int i = pageNumber * pageSize; i < pageNumber * pageSize + pageSize && i < queuedClients.size(); i++) {
+            jsonArray.put(queuedClients.get(i));
+        }
+
+        return jsonArray.toString();
     }
 
     @GetMapping("/chatRooms")
-    public String getChatRooms(@RequestParam(name = "closed", required = false) String closed) {
-        JSONObject jsonObject = new JSONObject();
+    public String getChatRooms(@RequestParam(name = "closed", required = false) String closed, @RequestParam(name = "pageNumber") int pageNumber, @RequestParam(name = "pageSize") int pageSize) {
         JSONArray jsonArray = new JSONArray();
+        ArrayList<JSONObject> rooms = new ArrayList<>();
+
         for (ChatRoom chatRoom : chatRooms.values()) {
             if ((chatRoom.isOpened() && closed == null) ||
                     (!chatRoom.isOpened() && closed != null)) {
@@ -160,11 +182,15 @@ public class ChatRestController {
                 jsonChatRoom.put("id", chatRoom.getId());
                 jsonChatRoom.put("agent", chatRoom.getAgent().getName());
                 jsonChatRoom.put("client", chatRoom.getClient().getName());
-                jsonArray.put(jsonChatRoom);
+                rooms.add(jsonChatRoom);
             }
         }
-        jsonObject.put("chatRooms", jsonArray);
-        return jsonObject.toString();
+
+        for (int i = pageNumber * pageSize; i < pageNumber * pageSize + pageSize && i < rooms.size(); i++) {
+            jsonArray.put(rooms.get(i));
+        }
+
+        return jsonArray.toString();
     }
 
     @GetMapping("/chatRoomDetails")

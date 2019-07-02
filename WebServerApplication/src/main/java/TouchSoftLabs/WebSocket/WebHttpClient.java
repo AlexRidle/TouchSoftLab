@@ -65,7 +65,7 @@ public class WebHttpClient extends WebSocketClient {
 
         synchronized (newMessages){
             if(newMessages.isEmpty()){
-                newMessages.wait(30000);
+                newMessages.wait(30000); //1000 is 1 second
             }
 
             if(!newMessages.isEmpty()){
