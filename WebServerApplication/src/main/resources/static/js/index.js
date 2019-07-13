@@ -45,7 +45,7 @@ window.onload = function () {
         var content = messageInput.value.trim();
         if (content.toUpperCase() === "/EXIT") {
             socket.onclose();
-            location.reload(true);
+            location.href="logout";
         } else if (content !== "") {
             var msg = new Object();
             msg.from = userName;
