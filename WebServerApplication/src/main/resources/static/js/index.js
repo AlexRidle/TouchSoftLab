@@ -1,10 +1,8 @@
 var sendMsg = document.querySelector("#send");
 var leaveConv = document.querySelector("#leave");
 var messageInput = document.querySelector('#message');
-var registration = document.querySelector('#registration');
-var registrationInput = document.querySelector('#name');
-var registrationForm = document.querySelector('#username-page');
-var chatForm = document.querySelector('#chat-page');
+var uName = document.querySelector('#username');
+var role = document.querySelector('#role');
 var messageArea = document.querySelector('#message-area');
 var userName = null;
 var userRole = null;
@@ -21,31 +19,14 @@ window.onload = function () {
     userColor = getColor();
     companionColor = getAnotherColor();
 
-    registration.onclick = function (event) {
-        var input = registrationInput.value.trim();
-        if (input.match("^\\/register+(?:\\s\\S+){2}$")) {
-            var inputData = input.split(" ");
-            userName = inputData[2];
-            userRole = inputData[1];
-            if (inputData[1].toUpperCase() === "CLIENT" || inputData[1].toUpperCase() === "AGENT") {
-                connectClient();
-                registrationForm.classList.add('hidden');
-                chatForm.classList.remove('hidden');
-                event.preventDefault();
-            } else {
-                alert("Регистрация не пройдена");
-            }
-        } else {
-            alert("Регистрация не пройдена");
-        }
-    }
+    connectClient();
 
     sendMsg.onclick = function (event) {
         event.preventDefault();
         var content = messageInput.value.trim();
         if (content.toUpperCase() === "/EXIT") {
             socket.onclose();
-            location.href="logout";
+            location.href = "logout";
         } else if (content !== "") {
             var msg = new Object();
             msg.from = userName;
@@ -75,6 +56,8 @@ function connectClient() {
 
     var host = document.location.host;
     var pathname = document.location.pathname;
+    userRole = role.value;
+    userName = uName.value;
     socket = new WebSocket("ws://" + host + pathname + "/" + userRole + "/" + userName);
 
     socket.onopen = function (event) {
@@ -94,7 +77,7 @@ function connectClient() {
         var color;
         var name;
 
-        if(from === 'SERVER' && content.substring(0, 26) === "Ваш идентификатор сессии: "){
+        if (from === 'SERVER' && content.substring(0, 26) === "Ваш идентификатор сессии: ") {
             return
         }
 

@@ -6,9 +6,11 @@ known = Session.SPRING_SECURITY_CONTEXT??
     <#assign
     user = Session.SPRING_SECURITY_CONTEXT.authentication.principal
     name = user.getUsername()
+    role = user.getRole()
     >
 <#else>
     <#assign
     name = "Guest"
+    role = "Client"
     >
 </#if>

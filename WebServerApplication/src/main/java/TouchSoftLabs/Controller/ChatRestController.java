@@ -210,7 +210,7 @@ public class ChatRestController {
         JSONObject jsonObject = new JSONObject();
         WebSocketClient client = new WebHttpClient(new URI(String.format("ws://localhost:8080/%s/%s/", "client", name)));
         client.connect();
-        jsonObject.put("response", "Successfully registered CLIENT with name " + name);
+        jsonObject.put("response", "Successfully registered CLIENT with uName " + name);
         return jsonObject.toString();
     }
 
@@ -219,7 +219,7 @@ public class ChatRestController {
         JSONObject jsonObject = new JSONObject();
         WebSocketClient agent = new WebHttpClient(new URI(String.format("ws://localhost:8080/%s/%s/", "agent", name)));
         agent.connect();
-        jsonObject.put("response", "Successfully registered AGENT with name " + name);
+        jsonObject.put("response", "Successfully registered AGENT with uName " + name);
         return jsonObject.toString();
     }
 
