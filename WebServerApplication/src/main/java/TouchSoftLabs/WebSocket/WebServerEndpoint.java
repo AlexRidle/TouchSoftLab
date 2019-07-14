@@ -35,7 +35,7 @@ public class WebServerEndpoint {
     @Getter
     private static HashSet<String> userNames = new HashSet<>();
 
-    private String username;
+    private boolean isConnectedSuccessfully = false;
 
     @OnOpen
     public void onOpen(Session session, @PathParam("username") String username, @PathParam("userrole") String userrole) throws IOException, EncodeException {
@@ -44,9 +44,10 @@ public class WebServerEndpoint {
             client.setSession(session);
 
             ServerService.sendMessageFromServerToUser("Вы уже подключены к чату. Отключитесь от него, чтобы создать новую сессию.", client);
+            ServerLogger.logWarn(String.format("Пользователь \"%s\" пытался присоединиться, но имел ранее не разорванное соединение", username));
             session.close();
         } else {
-            this.username = username;
+            isConnectedSuccessfully = true;
             userNames.add(username);
             Client client = ServerService.registerClient(username, userrole, session);
             ServerService.sendMessageFromServerToUser("Ваш идентификатор сессии: " + session.getId(), client);
@@ -63,8 +64,9 @@ public class WebServerEndpoint {
 
     @OnClose
     synchronized public void onClose(Session session) throws IOException, EncodeException {
-        userNames.remove(username);
-        ServerService.closeConnection(session);
+        if(isConnectedSuccessfully) {
+            ServerService.closeConnection(session);
+        }
     }
 
     @OnError

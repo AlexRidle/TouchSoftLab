@@ -3,6 +3,8 @@ package TouchSoftLabs;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -38,5 +40,10 @@ public class Application {
                 .build()
                 .apiInfo(getApiInfo());
 
+    }
+
+    @Bean
+    protected PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder(8);
     }
 }
