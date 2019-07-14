@@ -14,6 +14,7 @@ import org.java_websocket.client.WebSocketClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -104,6 +105,7 @@ public class ChatRestController {
     }
 
     @GetMapping("/registeredClients")
+    @PreAuthorize("hasAuthority('AGENT')")
     public String getRegisteredClients(@RequestParam(name = "pageNumber") int pageNumber, @RequestParam(name = "pageSize") int pageSize) {
         JSONArray jsonArray = new JSONArray();
         ArrayList<JSONObject> clients = new ArrayList<>();
@@ -125,6 +127,7 @@ public class ChatRestController {
     }
 
     @GetMapping("/agentDetails")
+    @PreAuthorize("hasAuthority('AGENT')")
     public ClientDto getAgentDetails(@RequestParam(name = "id") String id, HttpServletResponse response) {
         Client agent = users.get(id);
         ClientDto dto = null;
@@ -137,6 +140,7 @@ public class ChatRestController {
     }
 
     @GetMapping("/clientDetails")
+    @PreAuthorize("hasAuthority('AGENT')")
     public ClientDto getClientDetails(@RequestParam(name = "id") String id, HttpServletResponse response) {
         Client client = users.get(id);
         ClientDto dto = null;
@@ -149,6 +153,7 @@ public class ChatRestController {
     }
 
     @GetMapping("/queuedClients")
+    @PreAuthorize("hasAuthority('AGENT')")
     public String getQueuedClients(@RequestParam(name = "pageNumber") int pageNumber, @RequestParam(name = "pageSize") int pageSize) {
         JSONArray jsonArray = new JSONArray();
         ArrayList<JSONObject> queuedClients = new ArrayList<>();
@@ -171,6 +176,7 @@ public class ChatRestController {
     }
 
     @GetMapping("/chatRooms")
+    @PreAuthorize("hasAuthority('AGENT')")
     public String getChatRooms(@RequestParam(name = "closed", required = false) String closed, @RequestParam(name = "pageNumber") int pageNumber, @RequestParam(name = "pageSize") int pageSize) {
         JSONArray jsonArray = new JSONArray();
         ArrayList<JSONObject> rooms = new ArrayList<>();
@@ -194,6 +200,7 @@ public class ChatRestController {
     }
 
     @GetMapping("/chatRoomDetails")
+    @PreAuthorize("hasAuthority('AGENT')")
     public ChatRoomDto getChatRoomDetails(@RequestParam(name = "id") int id, HttpServletResponse response) {
         ChatRoom chatRoom = chatRooms.get(id);
         ChatRoomDto chatRoomDto = null;
@@ -224,6 +231,7 @@ public class ChatRestController {
     }
 
     @PostMapping("/sendMessageToClient")
+    @PreAuthorize("hasAuthority('AGENT')")
     public String sendMessageToClient(
             @RequestParam(value = "message") String message,
             @RequestParam(value = "agentId") String agentId) throws IOException, EncodeException {
@@ -239,6 +247,7 @@ public class ChatRestController {
     }
 
     @PostMapping("/sendMessageToAgent")
+    @PreAuthorize("hasAuthority('CLIENT')")
     public String sendMessageToAgent(
             @RequestParam(value = "message") String message,
             @RequestParam(value = "clientId") String clientId) throws IOException, EncodeException {
@@ -279,6 +288,7 @@ public class ChatRestController {
     }
 
     @PostMapping("/closeConnectionOfUser")
+    @PreAuthorize("hasAuthority('AGENT')")
     public String closeConnectionOfUser(
             @RequestParam(value = "userId") String userId) throws IOException {
         JSONObject jsonObject = new JSONObject();
