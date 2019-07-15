@@ -19,7 +19,7 @@
     <div class="chat-container">
         <div class="chat-header">
             <h2>TouchSoft чат</h2>
-            <sup>Ваш логин: ${name}. Ваша роль: <#if role == "AGENT">Агент<#else>Клиент</#if></sup>
+            <sup>Ваш логин: ${name}. Ваша роль: <#if role == "AGENT">Агент<#else>Клиент</#if> <a href="/logout">(выйти)</a></sup>
         </div>
         <ul id="message-area">
 
