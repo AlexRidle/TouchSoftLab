@@ -6,10 +6,11 @@ import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONObject;
 
 import java.net.URI;
+import java.util.Map;
 
 public class WebConsoleClient extends WebSocketClient {
 
-    public WebConsoleClient(URI serverURI) {
+    public WebConsoleClient(URI serverURI, Map<String, String> headers) {
         super(serverURI);
     }
 

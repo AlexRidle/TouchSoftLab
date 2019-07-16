@@ -3,6 +3,7 @@ package TouchSoftLabs.Service;
 import TouchSoftLabs.Client.WebConsoleClient;
 import TouchSoftLabs.Enumeration.Role;
 import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -12,6 +13,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Properties;
 
 public class ConsoleService {
@@ -31,7 +33,10 @@ public class ConsoleService {
                 input = systemIn.readLine();
                 splittedInput = input.split(" ");
             }
-            client = new WebConsoleClient(getClientURI(splittedInput[1], splittedInput[2]));
+            HashMap<String,String> headers = new HashMap<>();
+            headers.put("Authorization", "b15FeJyByMQ6JlT0/QnJRQ==");
+            headers.put("Cookie", "JSESSIONID=7F58FC12681A929A39F37971CBD3A0CC");
+            client = new WebConsoleClient(getClientURI(splittedInput[1], splittedInput[2]),headers);
             client.connect();
         } catch (URISyntaxException e) {
             System.out.println("Произошла ошибка при подключении к сокету");
