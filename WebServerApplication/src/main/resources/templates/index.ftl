@@ -1,35 +1,25 @@
+<#include "parts/security.ftl">
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>TouchSoft Чат</title>
-    <link rel="stylesheet" href="index.css" />
-    <link rel="shortcut icon" href="favicon.ico"/>
+    <link rel="stylesheet" href="../static/css/index.css" />
+    <link rel="shortcut icon" href="../static/favicon.ico"/>
 </head>
 <body>
 <noscript>
     <h2>Приносим извинения! Ваш браузер не поддерживает Javascript</h2>
 </noscript>
-<div id="username-page">
-    <div class="username-page-container">
-        <h1 class="title">Пожалуйста, зарегистрируйтесь</h1>
-        <h3 class="title">Введите /register, затем вашу роль и имя</h3>
-        <form id="usernameForm" name="usernameForm">
-            <div class="form-group">
-                <input type="text" id="name" placeholder="/register role name" autocomplete="off" class="form-control" />
-            </div>
-            <div class="form-group">
-                <button id="registration" type="submit" class="accent username-submit">Зарегистрироваться</button>
-            </div>
-        </form>
-        <a href="/swagger-ui.html"><sup>Перейти к Swagger-UI</sup></a>
-    </div>
-</div>
+    <input type="text" id="username" placeholder="username" autocomplete="off" class="form-control" hidden value="${name}"/>
+    <input type="text" id="role" placeholder="role" autocomplete="off" class="form-control" hidden value="${role}"/>
 
-<div id="chat-page" class="hidden">
+<div id="chat-page">
     <div class="chat-container">
         <div class="chat-header">
             <h2>TouchSoft чат</h2>
+            <sup>Ваш логин: ${name}. Ваша роль: <#if role == "AGENT">Агент<#else>Клиент</#if> <a href="/logout">(выйти)</a></sup>
         </div>
         <ul id="message-area">
 
@@ -45,6 +35,6 @@
         </form>
     </div>
 </div>
-<script src="index.js"></script>
+<script src="../static/js/index.js"></script>
 </body>
 </html>

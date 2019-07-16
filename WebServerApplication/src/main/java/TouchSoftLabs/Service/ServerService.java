@@ -11,6 +11,7 @@ import javax.websocket.EncodeException;
 import javax.websocket.Session;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import static TouchSoftLabs.Utils.ChatUtils.getTimeStamp;
@@ -20,6 +21,7 @@ public class ServerService {
     private static final HashMap<String, Client> users = WebServerEndpoint.getUsers();
     private static final LinkedList<String> usersQueue = WebServerEndpoint.getUsersQueue();
     private static final HashMap<Integer, ChatRoom> chatRooms = WebServerEndpoint.getChatRooms();
+    private static final HashSet<String> userNames = WebServerEndpoint.getUserNames();
 
     private static int chatRoomIdCounter = 0;
 
@@ -150,6 +152,7 @@ public class ServerService {
         }
 
         users.remove(session.getId());
+        userNames.remove(client.getName());
 
         ServerLogger.logInfo(String.format("Пользователь \"%s\" отсоединился от чата", client.getName()));
     }

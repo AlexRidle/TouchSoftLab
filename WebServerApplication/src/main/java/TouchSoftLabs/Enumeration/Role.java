@@ -1,6 +1,8 @@
 package TouchSoftLabs.Enumeration;
 
-public enum Role {
+import org.springframework.security.core.GrantedAuthority;
+
+public enum Role implements GrantedAuthority {
     CLIENT, AGENT;
 
     public static Role getUserRole(String role) {
@@ -11,5 +13,10 @@ public enum Role {
             default:
                 return Role.CLIENT;
         }
+    }
+
+    @Override
+    public String getAuthority() {
+        return name();
     }
 }
